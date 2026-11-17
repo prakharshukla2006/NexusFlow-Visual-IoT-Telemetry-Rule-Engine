@@ -9,22 +9,25 @@ import {
   CartesianGrid,
   Tooltip,
   ReferenceLine,
-  Legend,
 } from 'recharts';
 import {
   ChartTimeframe,
   MetricDefinition,
   MetricType,
+  SensorThresholds,
   TelemetryDataPoint,
 } from '../../types/telemetry';
 import { METRIC_DEFINITIONS } from '../../data/mockTelemetry';
-import { Clock, Layers, Maximize2, ShieldAlert } from 'lucide-react';
+import { Download, Sliders, ShieldAlert } from 'lucide-react';
 
 interface TelemetryTrendsChartProps {
   data: TelemetryDataPoint[];
   selectedMetric: MetricType;
   onSelectMetric: (metric: MetricType) => void;
   machineId: string;
+  overrideThresholds?: SensorThresholds;
+  onOpenThresholdConfig?: () => void;
+  onExportCsv?: () => void;
 }
 
 // Custom Tooltip for Industrial Telemetry
@@ -58,6 +61,9 @@ export const TelemetryTrendsChart: React.FC<TelemetryTrendsChartProps> = ({
   selectedMetric,
   onSelectMetric,
   machineId,
+  overrideThresholds,
+  onOpenThresholdConfig,
+  onExportCsv,
 }) => {
   const [timeframe, setTimeframe] = useState<ChartTimeframe>('5m');
   const [showMovingAverage, setShowMovingAverage] = useState<boolean>(true);
@@ -65,9 +71,9 @@ export const TelemetryTrendsChart: React.FC<TelemetryTrendsChartProps> = ({
 
   const activeDefinition: MetricDefinition = METRIC_DEFINITIONS[selectedMetric];
 
-  // Thresholds for the selected metric
-  const warningThreshold = activeDefinition.thresholds.warning;
-  const criticalThreshold = activeDefinition.thresholds.critical;
+  // Thresholds for the selected metric (custom or default)
+  const warningThreshold = overrideThresholds?.warning ?? activeDefinition.thresholds.warning;
+  const criticalThreshold = overrideThresholds?.critical ?? activeDefinition.thresholds.critical;
 
   const timeframes: { id: ChartTimeframe; label: string }[] = [
     { id: '1m', label: '1 Min' },
@@ -97,6 +103,30 @@ export const TelemetryTrendsChart: React.FC<TelemetryTrendsChartProps> = ({
 
         {/* Controls: Timeframes & Toggles */}
         <div className="flex flex-wrap items-center gap-2">
+          {/* Threshold Adjust Modal Trigger */}
+          {onOpenThresholdConfig && (
+            <button
+              onClick={onOpenThresholdConfig}
+              className="flex items-center space-x-1.5 px-2.5 py-1 rounded text-xs font-mono bg-industrial-800 hover:bg-industrial-700 text-cyan-300 border border-cyan-500/30 transition-all shadow-sm"
+              title="Adjust rule thresholds"
+            >
+              <Sliders className="w-3.5 h-3.5" />
+              <span>Rule Limits</span>
+            </button>
+          )}
+
+          {/* Export Telemetry CSV */}
+          {onExportCsv && (
+            <button
+              onClick={onExportCsv}
+              className="flex items-center space-x-1.5 px-2.5 py-1 rounded text-xs font-mono bg-industrial-800 hover:bg-industrial-700 text-slate-300 border border-industrial-700 transition-all"
+              title="Export current telemetry samples to CSV"
+            >
+              <Download className="w-3.5 h-3.5 text-slate-400" />
+              <span>Export CSV</span>
+            </button>
+          )}
+
           {/* Moving Average Toggle */}
           <button
             onClick={() => setShowMovingAverage(!showMovingAverage)}
@@ -106,7 +136,7 @@ export const TelemetryTrendsChart: React.FC<TelemetryTrendsChartProps> = ({
                 : 'bg-industrial-900 text-slate-400 border-industrial-800 hover:text-slate-200'
             }`}
           >
-            MA(5) Window: {showMovingAverage ? 'ON' : 'OFF'}
+            MA(5): {showMovingAverage ? 'ON' : 'OFF'}
           </button>
 
           {/* Threshold Lines Toggle */}
@@ -118,7 +148,7 @@ export const TelemetryTrendsChart: React.FC<TelemetryTrendsChartProps> = ({
                 : 'bg-industrial-900 text-slate-400 border-industrial-800 hover:text-slate-200'
             }`}
           >
-            Rules: {showThresholds ? 'VISIBLE' : 'HIDDEN'}
+            Rules: {showThresholds ? 'ON' : 'OFF'}
           </button>
 
           {/* Timeframe selector */}
@@ -204,7 +234,7 @@ export const TelemetryTrendsChart: React.FC<TelemetryTrendsChartProps> = ({
                   stroke="#f43f5e"
                   strokeDasharray="4 4"
                   label={{
-                    value: `CRITICAL (${criticalThreshold} ${activeDefinition.unit})`,
+                    value: `CRITICAL (${criticalThreshold.toFixed(activeDefinition.decimals)} ${activeDefinition.unit})`,
                     fill: '#f43f5e',
                     fontSize: 10,
                     position: 'insideTopRight',
@@ -216,7 +246,7 @@ export const TelemetryTrendsChart: React.FC<TelemetryTrendsChartProps> = ({
                   stroke="#f59e0b"
                   strokeDasharray="3 3"
                   label={{
-                    value: `WARN (${warningThreshold} ${activeDefinition.unit})`,
+                    value: `WARN (${warningThreshold.toFixed(activeDefinition.decimals)} ${activeDefinition.unit})`,
                     fill: '#f59e0b',
                     fontSize: 10,
                     position: 'insideBottomRight',
@@ -285,7 +315,7 @@ export const TelemetryTrendsChart: React.FC<TelemetryTrendsChartProps> = ({
           )}
         </div>
         <div className="text-slate-400 mt-2 sm:mt-0">
-          Evaluated via Visual Rule Engine • Influx Buffer: 30 Samples
+          Evaluated via Visual Rule Engine • Influx Buffer: {data.length} Samples
         </div>
       </div>
     </div>

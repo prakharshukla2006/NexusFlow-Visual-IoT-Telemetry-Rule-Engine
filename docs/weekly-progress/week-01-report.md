@@ -4,7 +4,7 @@
 * **Team Member:** Member 4 (Prakhar Shukla)
 * **Role:** Real-Time Dashboard & Alert Integration
 * **Milestone Focus:** Create dashboard layout and choose chart library
-* **Commit Count:** 10 valid commits
+* **Active Progression:** Week 1 Completed & Enhanced
 
 ---
 
@@ -26,11 +26,14 @@
   - Multi-metric time-series trends chart built with Recharts (AreaChart with linear gradients, custom dark tooltip, timeframe toggles [1m, 5m, 15m, 1h, Live], moving-average overlay line, and warning/critical threshold reference markers).
   - Industrial fleet status grid covering gas turbines, centrifugal compressors, hydraulic pumps, and generators with health index progress bars.
   - Real-time rule alerts & notification feed with severity badges (CRITICAL, WARNING, INFO) and mock SMS / webhook integration dispatch statuses.
+  - Interactive Threshold Configuration Modal allowing operators to dynamically adjust Warning/Critical limits per sensor in real-time with instant Recharts reference line updates.
+  - Telemetry Data Export Utility allowing operators to export current streaming buffer data directly to standardized CSV for industrial audit logs.
 
 ### 2. Fixes & Engineering Challenges Solved
 - Resolved Windows CLI cmd parsing issue when executing bin commands under folder paths containing spaces and ampersands (`NexusFlow Visual IoT Telemetry & Rule Engine`) by executing node binaries directly within npm scripts.
 - Optimized Recharts streaming performance by disabling transition animations (`isAnimationActive={false}`) during real-time interval ticks to prevent CPU throttling on rapid data arrival.
 - Implemented a 30-sample sliding buffer algorithm to guarantee constant-time rendering complexity O(1) during live telemetry simulation.
+- Integrated runtime state overrides for threshold markers without triggering unneeded re-mounts of the Recharts canvas wrapper.
 
 ### 3. Blockers
 - None. All scheduled Week 1 objectives for Member 4 ("Create dashboard layout and choose chart library") were achieved ahead of schedule.
@@ -42,7 +45,7 @@
 
 ---
 
-## 📌 10 Valid Commits Log (Week 1)
+## 📌 Commits Log (Week 1)
 
 | # | Commit Message | Scope |
 | :-: | :--- | :--- |
@@ -56,3 +59,4 @@
 | **8** | `feat(dashboard): implement multi-metric telemetry trends chart using Recharts` | Recharts AreaChart with custom tooltip & thresholds |
 | **9** | `feat(dashboard): add machine fleet status grid and recent alert event panel` | Fleet overview grid, rule alerts feed with mock actions |
 | **10** | `docs: complete Week 1 write-up and progress documentation` | Comprehensive progress report and submission text |
+| **11** | `feat(dashboard): add dynamic rule threshold modal and telemetry CSV export for Week 1` | Runtime threshold limit adjustments, CSV data export & toast feedback |
