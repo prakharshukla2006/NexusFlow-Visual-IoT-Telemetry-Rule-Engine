@@ -13,6 +13,21 @@ export type AlertActionStatus = 'pending' | 'dispatched' | 'webhook_delivered' |
 
 export type ChartTimeframe = '1m' | '5m' | '15m' | '1h' | 'live';
 
+export type WsConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'reconnecting';
+
+export type TelemetryFeedMode = 'live_websocket' | 'static_baseline';
+
+export interface WsNetworkStats {
+  status: WsConnectionStatus;
+  latencyMs: number;
+  messagesReceived: number;
+  bytesReceived: number;
+  reconnectCount: number;
+  serverUrl: string;
+  clientId?: string;
+  lastHeartbeat?: string;
+}
+
 export interface SensorThresholds {
   warning: number;
   critical: number;
