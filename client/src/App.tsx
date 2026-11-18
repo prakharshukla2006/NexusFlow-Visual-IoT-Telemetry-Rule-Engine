@@ -4,9 +4,12 @@ import { DeviceFilterBar } from './components/dashboard/DeviceFilterBar';
 import { SystemHealthBanner } from './components/dashboard/SystemHealthBanner';
 import { TelemetryMetricCard } from './components/dashboard/TelemetryMetricCard';
 import { TelemetryTrendsChart } from './components/dashboard/TelemetryTrendsChart';
+import { DualMetricsComparisonChart } from './components/dashboard/DualMetricsComparisonChart';
+import { StreamPlaybackControls } from './components/dashboard/StreamPlaybackControls';
 import { MachineStatusGrid } from './components/dashboard/MachineStatusGrid';
 import { RecentAlertsFeed } from './components/dashboard/RecentAlertsFeed';
 import { ThresholdConfigModal } from './components/dashboard/ThresholdConfigModal';
+import { audioAlert } from './utils/audioAlert';
 import {
   MOCK_MACHINES,
   METRIC_DEFINITIONS,
@@ -20,6 +23,13 @@ export const App: React.FC = () => {
   const [selectedMachineId, setSelectedMachineId] = useState<string>('T-101');
   const [selectedMetric, setSelectedMetric] = useState<MetricType>('temperature');
   const [alerts, setAlerts] = useState(INITIAL_ALERTS);
+
+  // Playback & View controls (Week 1 Day 3)
+  const [isStreaming, setIsStreaming] = useState<boolean>(true);
+  const [streamSpeed, setStreamSpeed] = useState<number>(1);
+  const [audioEnabled, setAudioEnabled] = useState<boolean>(false);
+  const [viewMode, setViewMode] = useState<'single' | 'dual'>('single');
+  const [highlightAnomalies, setHighlightAnomalies] = useState<boolean>(true);
 
   // Custom thresholds map (allows real-time adjustment per metric)
   const [thresholdOverrides, setThresholdOverrides] = useState<Record<string, SensorThresholds>>({});
@@ -51,8 +61,17 @@ export const App: React.FC = () => {
     return () => clearTimeout(timer);
   }, [toastMessage]);
 
-  // Live telemetry stream simulator (updates every 2.5 seconds to showcase real-time reactivity)
+  // Sync audio service with state
   useEffect(() => {
+    audioAlert.setEnabled(audioEnabled);
+  }, [audioEnabled]);
+
+  // Live telemetry stream simulator (controlled by isStreaming and streamSpeed)
+  useEffect(() => {
+    if (!isStreaming) return;
+
+    const tickIntervalMs = Math.round(2500 / streamSpeed);
+
     const interval = setInterval(() => {
       const now = Date.now();
       const timeFormatted = new Date(now).toLocaleTimeString([], {
@@ -97,6 +116,10 @@ export const App: React.FC = () => {
           const vibCrit = thresholdOverrides.vibration?.critical ?? 4.8;
           const isAnomaly = newTemp > tempCrit || newVib > vibCrit;
 
+          if (isAnomaly && machine.id === selectedMachineId) {
+            audioAlert.playCriticalAlarm();
+          }
+
           const newPoint: TelemetryDataPoint = {
             timestamp: now,
             timeFormatted,
@@ -125,7 +148,6 @@ export const App: React.FC = () => {
           if (!stream || stream.length === 0) return m;
           const latest = stream[stream.length - 1];
           const tempCrit = thresholdOverrides.temperature?.critical ?? 85.0;
-          const vibCrit = thresholdOverrides.vibration?.critical ?? 4.8;
 
           return {
             ...m,
@@ -145,10 +167,10 @@ export const App: React.FC = () => {
           };
         })
       );
-    }, 2500);
+    }, tickIntervalMs);
 
     return () => clearInterval(interval);
-  }, [telemetryStore, machines, thresholdOverrides]);
+  }, [telemetryStore, machines, thresholdOverrides, isStreaming, streamSpeed, selectedMachineId]);
 
   const handleAcknowledgeAlert = (id: string) => {
     setAlerts((prev) =>
@@ -161,7 +183,7 @@ export const App: React.FC = () => {
       ...prev,
       [selectedMetric]: newThresholds,
     }));
-    setToastMessage(`Updated ${currentMetricDef.label} rule limits: Warn ${newThresholds.warning}, Crit ${newThresholds.critical}`);
+    setToastMessage(`Updated ${currentMetricDef.label} limits: Warn ${newThresholds.warning}, Crit ${newThresholds.critical}`);
   };
 
   const handleResetDefaults = () => {
@@ -232,6 +254,20 @@ export const App: React.FC = () => {
         anomalyCount={selectedMachine.status !== 'operational' ? 1 : 0}
       />
 
+      {/* Stream Playback & SCADA View Controls */}
+      <StreamPlaybackControls
+        isStreaming={isStreaming}
+        onToggleStreaming={() => setIsStreaming(!isStreaming)}
+        streamSpeed={streamSpeed}
+        onChangeSpeed={setStreamSpeed}
+        audioEnabled={audioEnabled}
+        onToggleAudio={() => setAudioEnabled(!audioEnabled)}
+        viewMode={viewMode}
+        onChangeViewMode={setViewMode}
+        highlightAnomalies={highlightAnomalies}
+        onToggleHighlightAnomalies={() => setHighlightAnomalies(!highlightAnomalies)}
+      />
+
       {/* Primary 4 Metric Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {(['temperature', 'vibration', 'pressure', 'rpm'] as MetricType[]).map((metricKey) => {
@@ -264,15 +300,24 @@ export const App: React.FC = () => {
       </div>
 
       {/* Main Multi-Metric Time-Series Chart (Recharts) */}
-      <TelemetryTrendsChart
-        data={currentChartData}
-        selectedMetric={selectedMetric}
-        onSelectMetric={setSelectedMetric}
-        machineId={selectedMachineId}
-        overrideThresholds={thresholdOverrides[selectedMetric]}
-        onOpenThresholdConfig={() => setIsThresholdModalOpen(true)}
-        onExportCsv={handleExportCsv}
-      />
+      {viewMode === 'single' ? (
+        <TelemetryTrendsChart
+          data={currentChartData}
+          selectedMetric={selectedMetric}
+          onSelectMetric={setSelectedMetric}
+          machineId={selectedMachineId}
+          overrideThresholds={thresholdOverrides[selectedMetric]}
+          onOpenThresholdConfig={() => setIsThresholdModalOpen(true)}
+          onExportCsv={handleExportCsv}
+        />
+      ) : (
+        <DualMetricsComparisonChart
+          data={currentChartData}
+          machineId={selectedMachineId}
+          tempThresholds={thresholdOverrides.temperature}
+          vibThresholds={thresholdOverrides.vibration}
+        />
+      )}
 
       {/* Bottom Grid: Industrial Fleet Status & Real-Time Alerts */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
