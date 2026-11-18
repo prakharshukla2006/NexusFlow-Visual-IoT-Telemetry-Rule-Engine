@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { AppLayout } from './components/layout/AppLayout';
 import { DeviceFilterBar } from './components/dashboard/DeviceFilterBar';
 import { SystemHealthBanner } from './components/dashboard/SystemHealthBanner';
@@ -9,6 +9,8 @@ import { StreamPlaybackControls } from './components/dashboard/StreamPlaybackCon
 import { MachineStatusGrid } from './components/dashboard/MachineStatusGrid';
 import { RecentAlertsFeed } from './components/dashboard/RecentAlertsFeed';
 import { ThresholdConfigModal } from './components/dashboard/ThresholdConfigModal';
+import { WsNetworkDiagnosticsModal } from './components/dashboard/WsNetworkDiagnosticsModal';
+import { useWebSocketTelemetry } from './hooks/useWebSocketTelemetry';
 import { audioAlert } from './utils/audioAlert';
 import {
   MOCK_MACHINES,
@@ -16,15 +18,25 @@ import {
   INITIAL_ALERTS,
   generateHistoricalTelemetry,
 } from './data/mockTelemetry';
-import { MetricType, SensorThresholds, TelemetryDataPoint } from './types/telemetry';
+import {
+  MetricType,
+  SensorThresholds,
+  TelemetryDataPoint,
+  TelemetryFeedMode,
+  RuleAlertEvent,
+} from './types/telemetry';
 
 export const App: React.FC = () => {
   const [machines, setMachines] = useState(MOCK_MACHINES);
   const [selectedMachineId, setSelectedMachineId] = useState<string>('T-101');
   const [selectedMetric, setSelectedMetric] = useState<MetricType>('temperature');
-  const [alerts, setAlerts] = useState(INITIAL_ALERTS);
+  const [alerts, setAlerts] = useState<RuleAlertEvent[]>(INITIAL_ALERTS);
 
-  // Playback & View controls (Week 1 Day 3)
+  // Feed Mode: 'live_websocket' vs 'static_baseline' (Week 2 Milestone)
+  const [feedMode, setFeedMode] = useState<TelemetryFeedMode>('live_websocket');
+  const [isWsModalOpen, setIsWsModalOpen] = useState<boolean>(false);
+
+  // Playback & View controls
   const [isStreaming, setIsStreaming] = useState<boolean>(true);
   const [streamSpeed, setStreamSpeed] = useState<number>(1);
   const [audioEnabled, setAudioEnabled] = useState<boolean>(false);
@@ -36,6 +48,15 @@ export const App: React.FC = () => {
   const [isThresholdModalOpen, setIsThresholdModalOpen] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
+  // Static baseline dataset (Week 2 static dashboard chart reference)
+  const staticBaselineStore = useMemo<Record<string, TelemetryDataPoint[]>>(() => {
+    const staticMap: Record<string, TelemetryDataPoint[]> = {};
+    MOCK_MACHINES.forEach((m) => {
+      staticMap[m.id] = generateHistoricalTelemetry(m.id, 30);
+    });
+    return staticMap;
+  }, []);
+
   // Store telemetry buffer per machine
   const [telemetryStore, setTelemetryStore] = useState<Record<string, TelemetryDataPoint[]>>(() => {
     const initial: Record<string, TelemetryDataPoint[]> = {};
@@ -45,8 +66,26 @@ export const App: React.FC = () => {
     return initial;
   });
 
+  const handleAlertFromWebSocket = useCallback((newAlert: RuleAlertEvent) => {
+    setAlerts((prev) => [newAlert, ...prev.slice(0, 9)]);
+    setToastMessage(`New Alert: ${newAlert.ruleName} on ${newAlert.machineName}`);
+  }, []);
+
+  // WebSocket Telemetry Hook integration (Week 2)
+  const { networkStats, reconnect } = useWebSocketTelemetry({
+    machineId: selectedMachineId,
+    initialData: telemetryStore[selectedMachineId],
+    feedMode,
+    onAlertReceived: handleAlertFromWebSocket,
+  });
+
   const selectedMachine = machines.find((m) => m.id === selectedMachineId) || machines[0];
-  const currentChartData = telemetryStore[selectedMachineId] || [];
+
+  // Active chart data: either static baseline reference or live stream buffer
+  const currentChartData =
+    feedMode === 'static_baseline'
+      ? staticBaselineStore[selectedMachineId] || []
+      : telemetryStore[selectedMachineId] || [];
 
   // Active definition merged with any runtime threshold adjustments
   const currentMetricDef = {
@@ -66,9 +105,9 @@ export const App: React.FC = () => {
     audioAlert.setEnabled(audioEnabled);
   }, [audioEnabled]);
 
-  // Live telemetry stream simulator (controlled by isStreaming and streamSpeed)
+  // Live telemetry stream simulator (updates only when in live_websocket mode and isStreaming is true)
   useEffect(() => {
-    if (!isStreaming) return;
+    if (!isStreaming || feedMode === 'static_baseline') return;
 
     const tickIntervalMs = Math.round(2500 / streamSpeed);
 
@@ -170,7 +209,7 @@ export const App: React.FC = () => {
     }, tickIntervalMs);
 
     return () => clearInterval(interval);
-  }, [telemetryStore, machines, thresholdOverrides, isStreaming, streamSpeed, selectedMachineId]);
+  }, [telemetryStore, machines, thresholdOverrides, isStreaming, streamSpeed, selectedMachineId, feedMode]);
 
   const handleAcknowledgeAlert = (id: string) => {
     setAlerts((prev) =>
@@ -231,7 +270,12 @@ export const App: React.FC = () => {
   const latestPoint = currentChartData[currentChartData.length - 1];
 
   return (
-    <AppLayout activeAlertCount={activeAlertCount}>
+    <AppLayout
+      activeAlertCount={activeAlertCount}
+      onOpenWsDiagnostics={() => setIsWsModalOpen(true)}
+      wsStatus={networkStats.status}
+      feedMode={feedMode}
+    >
       {/* Toast Notification Banner */}
       {toastMessage && (
         <div className="fixed bottom-6 right-6 z-50 bg-cyan-950 border border-cyan-500 text-cyan-200 px-4 py-2.5 rounded-lg shadow-2xl text-xs font-mono flex items-center space-x-2 animate-bounce">
@@ -256,7 +300,7 @@ export const App: React.FC = () => {
 
       {/* Stream Playback & SCADA View Controls */}
       <StreamPlaybackControls
-        isStreaming={isStreaming}
+        isStreaming={isStreaming && feedMode === 'live_websocket'}
         onToggleStreaming={() => setIsStreaming(!isStreaming)}
         streamSpeed={streamSpeed}
         onChangeSpeed={setStreamSpeed}
@@ -309,6 +353,7 @@ export const App: React.FC = () => {
           overrideThresholds={thresholdOverrides[selectedMetric]}
           onOpenThresholdConfig={() => setIsThresholdModalOpen(true)}
           onExportCsv={handleExportCsv}
+          feedMode={feedMode}
         />
       ) : (
         <DualMetricsComparisonChart
@@ -343,6 +388,17 @@ export const App: React.FC = () => {
         definition={currentMetricDef}
         onSaveThresholds={handleSaveThresholds}
         onResetDefaults={handleResetDefaults}
+      />
+
+      {/* WebSocket Network Diagnostics Modal (Week 2) */}
+      <WsNetworkDiagnosticsModal
+        isOpen={isWsModalOpen}
+        onClose={() => setIsWsModalOpen(false)}
+        networkStats={networkStats}
+        feedMode={feedMode}
+        onChangeFeedMode={setFeedMode}
+        onReconnect={reconnect}
+        selectedMachineId={selectedMachineId}
       />
     </AppLayout>
   );

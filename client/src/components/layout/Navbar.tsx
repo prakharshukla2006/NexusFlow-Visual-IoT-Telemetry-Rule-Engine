@@ -12,9 +12,18 @@ import {
 interface NavbarProps {
   activeAlertCount: number;
   onOpenAlertsModal?: () => void;
+  onOpenWsDiagnostics?: () => void;
+  wsStatus?: string;
+  feedMode?: string;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ activeAlertCount, onOpenAlertsModal }) => {
+export const Navbar: React.FC<NavbarProps> = ({
+  activeAlertCount,
+  onOpenAlertsModal,
+  onOpenWsDiagnostics,
+  wsStatus = 'STREAMING',
+  feedMode = 'live_websocket',
+}) => {
   const [timeString, setTimeString] = useState<string>('');
 
   useEffect(() => {
@@ -59,12 +68,18 @@ export const Navbar: React.FC<NavbarProps> = ({ activeAlertCount, onOpenAlertsMo
           <span className="text-emerald-400 font-medium">5,000 writes/s</span>
         </div>
 
-        {/* WebSocket Pipeline Indicator */}
-        <div className="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-industrial-850 border border-industrial-800 text-xs font-mono">
-          <Radio className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+        {/* WebSocket Pipeline Indicator / Diagnostics Trigger */}
+        <button
+          onClick={onOpenWsDiagnostics}
+          className="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-industrial-850 hover:bg-industrial-800 border border-industrial-800 hover:border-cyan-500/40 text-xs font-mono transition-all cursor-pointer"
+          title="Click to view WebSocket telemetry gateway diagnostics"
+        >
+          <Radio className={`w-3.5 h-3.5 ${wsStatus === 'connected' || wsStatus === 'STREAMING' ? 'text-cyan-400 animate-pulse' : 'text-amber-400'}`} />
           <span className="text-slate-400">WS:</span>
-          <span className="text-cyan-300">STREAMING</span>
-        </div>
+          <span className={wsStatus === 'connected' || wsStatus === 'STREAMING' ? 'text-cyan-300 font-semibold' : 'text-amber-300'}>
+            {feedMode === 'static_baseline' ? 'STATIC' : wsStatus.toUpperCase()}
+          </span>
+        </button>
 
         {/* Notifications & Alert Trigger */}
         <button

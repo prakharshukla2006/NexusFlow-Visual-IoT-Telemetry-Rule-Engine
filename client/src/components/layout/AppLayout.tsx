@@ -5,9 +5,18 @@ import { Navbar } from './Navbar';
 interface AppLayoutProps {
   children: React.ReactNode;
   activeAlertCount?: number;
+  onOpenWsDiagnostics?: () => void;
+  wsStatus?: string;
+  feedMode?: string;
 }
 
-export const AppLayout: React.FC<AppLayoutProps> = ({ children, activeAlertCount = 2 }) => {
+export const AppLayout: React.FC<AppLayoutProps> = ({
+  children,
+  activeAlertCount = 2,
+  onOpenWsDiagnostics,
+  wsStatus,
+  feedMode,
+}) => {
   const [currentTab, setCurrentTab] = useState<string>('dashboard');
 
   return (
@@ -17,7 +26,12 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, activeAlertCount
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <Navbar activeAlertCount={activeAlertCount} />
+        <Navbar
+          activeAlertCount={activeAlertCount}
+          onOpenWsDiagnostics={onOpenWsDiagnostics}
+          wsStatus={wsStatus}
+          feedMode={feedMode}
+        />
         
         {/* Dynamic Page Viewport with Industrial Grid Background */}
         <main className="flex-1 overflow-y-auto p-6 bg-[radial-gradient(#162238_1px,transparent_1px)] [background-size:24px_24px] bg-industrial-950">

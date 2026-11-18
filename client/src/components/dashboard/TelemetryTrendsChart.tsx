@@ -28,6 +28,7 @@ interface TelemetryTrendsChartProps {
   overrideThresholds?: SensorThresholds;
   onOpenThresholdConfig?: () => void;
   onExportCsv?: () => void;
+  feedMode?: 'live_websocket' | 'static_baseline';
 }
 
 // Custom Tooltip for Industrial Telemetry
@@ -64,6 +65,7 @@ export const TelemetryTrendsChart: React.FC<TelemetryTrendsChartProps> = ({
   overrideThresholds,
   onOpenThresholdConfig,
   onExportCsv,
+  feedMode = 'live_websocket',
 }) => {
   const [timeframe, setTimeframe] = useState<ChartTimeframe>('5m');
   const [showMovingAverage, setShowMovingAverage] = useState<boolean>(true);
@@ -94,6 +96,15 @@ export const TelemetryTrendsChart: React.FC<TelemetryTrendsChartProps> = ({
             </h3>
             <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
               RECHARTS SVG
+            </span>
+            <span
+              className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
+                feedMode === 'live_websocket'
+                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                  : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+              }`}
+            >
+              {feedMode === 'live_websocket' ? '● LIVE WS FEED' : 'STATIC BASELINE'}
             </span>
           </div>
           <p className="text-xs text-slate-400 mt-0.5 font-mono">

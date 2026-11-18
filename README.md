@@ -58,8 +58,8 @@ This repository branch represents the work of **Member 4**, responsible for **Re
 
 | Week | Milestone Goal | Status | Report Link |
 | :--- | :--- | :--- | :--- |
-| **Week 1** | **Create dashboard layout and choose chart library** | **Completed (10 Commits)** | [Week 1 Report](docs/weekly-progress/week-01-report.md) |
-| **Week 2** | Set up WebSocket events and static dashboard charts | Upcoming | - |
+| **Week 1** | **Create dashboard layout and choose chart library** | **Completed (12 Commits)** | [Week 1 Report](docs/weekly-progress/week-01-report.md) |
+| **Week 2** | **Set up WebSocket events and static dashboard charts** | **Completed (4 Commits)** | [Week 2 Report](docs/weekly-progress/week-02-report.md) |
 | **Week 3** | Connect live charts and display rule events | Upcoming | - |
 | **Week 4** | Complete webhook/mock SMS and end-to-end demo | Upcoming | - |
 
