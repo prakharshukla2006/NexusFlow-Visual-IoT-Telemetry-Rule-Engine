@@ -10,6 +10,7 @@ import { MachineStatusGrid } from './components/dashboard/MachineStatusGrid';
 import { RecentAlertsFeed } from './components/dashboard/RecentAlertsFeed';
 import { ThresholdConfigModal } from './components/dashboard/ThresholdConfigModal';
 import { WsNetworkDiagnosticsModal } from './components/dashboard/WsNetworkDiagnosticsModal';
+import { StaticBaselineInspector } from './components/dashboard/StaticBaselineInspector';
 import { useWebSocketTelemetry } from './hooks/useWebSocketTelemetry';
 import { audioAlert } from './utils/audioAlert';
 import {
@@ -363,6 +364,15 @@ export const App: React.FC = () => {
           vibThresholds={thresholdOverrides.vibration}
         />
       )}
+
+      {/* Static Baseline Calibration & Reference Delta Inspector (Week 2 Milestone) */}
+      <StaticBaselineInspector
+        currentValue={latestPoint ? (latestPoint[selectedMetric] as number) : selectedMachine.metrics[selectedMetric]}
+        metric={selectedMetric}
+        machineId={selectedMachineId}
+        isStaticMode={feedMode === 'static_baseline'}
+        onToggleStaticMode={() => setFeedMode(feedMode === 'static_baseline' ? 'live_websocket' : 'static_baseline')}
+      />
 
       {/* Bottom Grid: Industrial Fleet Status & Real-Time Alerts */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
