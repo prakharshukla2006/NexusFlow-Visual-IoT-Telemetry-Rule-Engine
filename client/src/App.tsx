@@ -11,6 +11,7 @@ import { RecentAlertsFeed } from './components/dashboard/RecentAlertsFeed';
 import { ThresholdConfigModal } from './components/dashboard/ThresholdConfigModal';
 import { WsNetworkDiagnosticsModal } from './components/dashboard/WsNetworkDiagnosticsModal';
 import { StaticBaselineInspector } from './components/dashboard/StaticBaselineInspector';
+import { EquipmentHealthRadar } from './components/dashboard/EquipmentHealthRadar';
 import { useWebSocketTelemetry } from './hooks/useWebSocketTelemetry';
 import { audioAlert } from './utils/audioAlert';
 import {
@@ -365,14 +366,21 @@ export const App: React.FC = () => {
         />
       )}
 
-      {/* Static Baseline Calibration & Reference Delta Inspector (Week 2 Milestone) */}
-      <StaticBaselineInspector
-        currentValue={latestPoint ? (latestPoint[selectedMetric] as number) : selectedMachine.metrics[selectedMetric]}
-        metric={selectedMetric}
-        machineId={selectedMachineId}
-        isStaticMode={feedMode === 'static_baseline'}
-        onToggleStaticMode={() => setFeedMode(feedMode === 'static_baseline' ? 'live_websocket' : 'static_baseline')}
-      />
+      {/* Calibration & Equilibrium Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="lg:col-span-12 xl:col-span-8">
+          <StaticBaselineInspector
+            currentValue={latestPoint ? (latestPoint[selectedMetric] as number) : selectedMachine.metrics[selectedMetric]}
+            metric={selectedMetric}
+            machineId={selectedMachineId}
+            isStaticMode={feedMode === 'static_baseline'}
+            onToggleStaticMode={() => setFeedMode(feedMode === 'static_baseline' ? 'live_websocket' : 'static_baseline')}
+          />
+        </div>
+        <div className="lg:col-span-12 xl:col-span-4">
+          <EquipmentHealthRadar machine={selectedMachine} />
+        </div>
+      </div>
 
       {/* Bottom Grid: Industrial Fleet Status & Real-Time Alerts */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

@@ -9,6 +9,7 @@ import {
   CartesianGrid,
   Tooltip,
   ReferenceLine,
+  Brush,
 } from 'recharts';
 import {
   ChartTimeframe,
@@ -70,6 +71,7 @@ export const TelemetryTrendsChart: React.FC<TelemetryTrendsChartProps> = ({
   const [timeframe, setTimeframe] = useState<ChartTimeframe>('5m');
   const [showMovingAverage, setShowMovingAverage] = useState<boolean>(true);
   const [showThresholds, setShowThresholds] = useState<boolean>(true);
+  const [showBrush, setShowBrush] = useState<boolean>(false);
 
   const activeDefinition: MetricDefinition = METRIC_DEFINITIONS[selectedMetric];
 
@@ -137,6 +139,19 @@ export const TelemetryTrendsChart: React.FC<TelemetryTrendsChartProps> = ({
               <span>Export CSV</span>
             </button>
           )}
+
+          {/* Timeline Zoom & Brush Toggle */}
+          <button
+            onClick={() => setShowBrush(!showBrush)}
+            className={`px-2.5 py-1 rounded text-xs font-mono border transition-all ${
+              showBrush
+                ? 'bg-industrial-800 text-cyan-300 border-cyan-500/40 shadow-sm'
+                : 'bg-industrial-900 text-slate-400 border-industrial-800 hover:text-slate-200'
+            }`}
+            title="Toggle interactive timeline brush scrubber and zoom window"
+          >
+            Zoom Brush: {showBrush ? 'ON' : 'OFF'}
+          </button>
 
           {/* Moving Average Toggle */}
           <button
@@ -305,6 +320,16 @@ export const TelemetryTrendsChart: React.FC<TelemetryTrendsChartProps> = ({
                 strokeDasharray="5 5"
                 dot={false}
                 isAnimationActive={false}
+              />
+            )}
+            {/* Interactive Timeline Brush Scrubber (Recharts) */}
+            {showBrush && (
+              <Brush
+                dataKey="timeFormatted"
+                height={26}
+                stroke="#00f0ff"
+                fill="#090d16"
+                travellerWidth={8}
               />
             )}
           </AreaChart>

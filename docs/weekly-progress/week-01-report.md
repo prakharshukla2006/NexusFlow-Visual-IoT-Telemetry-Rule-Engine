@@ -22,6 +22,8 @@
   * System Health Banner displaying unit health index percentage, active rule anomaly counter, and telemetry latency monitor.
   * 4 Telemetry Metric Cards displaying real-time sensor readings, warning/critical threshold states, and custom SVG sparkline trend previews.
   * Multi-metric Telemetry Trends Chart built with Recharts (AreaChart with linear gradients, custom dark tooltips, timeframe toggles [1m, 5m, 15m, 1h, Live], moving-average overlay line, and warning/critical threshold reference markers).
+  * Interactive Timeline Brush Scrubber using Recharts `<Brush>` allowing operators to zoom into sub-second anomaly intervals and pan across historical telemetry.
+  * Multi-Sensor Equipment Health Radar (`EquipmentHealthRadar.tsx`) visualizing machine balance equilibrium across 5 normalized axes (Thermal, Vibration, Pressure, Kinematics, Electrical load).
   * Industrial Fleet Status Grid covering gas turbines, centrifugal compressors, hydraulic pumps, and generators with health index progress bars.
   * Recent Alerts Feed displaying rule trigger histories and mock SMS / webhook integration dispatch statuses.
 - Advanced SCADA Control Room Capabilities:
