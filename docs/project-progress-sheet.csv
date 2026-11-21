@@ -1,0 +1,32 @@
+Phase,Task ID,Module / Feature,Description,Assigned To,Target Week,Status,Evidence / Output
+Week 1,W1.1,Architecture Decision (ADR-001),Evaluated Recharts vs Chart.js for industrial telemetry streaming,Member 4,Week 1,Completed,docs/ADR-001-chart-library-selection.md
+Week 1,W1.2,Frontend Scaffolding,Bootstrap React 18 + Vite + TypeScript + Tailwind CSS dark SCADA theme,Member 4,Week 1,Completed,client/package.json & tailwind.config.js
+Week 1,W1.3,Data Modeling & Simulation,Defined TypeScript interfaces and 4-machine mock telemetry generator,Member 4,Week 1,Completed,client/src/types/telemetry.ts
+Week 1,W1.4,SCADA Dashboard Shell,Constructed AppLayout collapsible sidebar and header with live clock,Member 4,Week 1,Completed,client/src/components/layout/AppLayout.tsx
+Week 1,W1.5,Sensor Metric Cards,4 telemetry cards (Temp Vib Pressure RPM) with SVG sparklines,Member 4,Week 1,Completed,client/src/components/dashboard/TelemetryMetricCard.tsx
+Week 1,W1.6,Trends Chart & Brush,Recharts AreaChart with timeline zoom brush scrubber,Member 4,Week 1,Completed,client/src/components/dashboard/TelemetryTrendsChart.tsx
+Week 1,W1.7,Dual & Fleet Recharts Views,Dual synchronized view (syncId) and 4-unit comparative overlay,Member 4,Week 1,Completed,FleetComparativeOverlayChart.tsx
+Week 1,W1.8,Dynamic Thresholds & Export,Runtime setpoint modal and standardized CSV telemetry export,Member 4,Week 1,Completed,ThresholdConfigModal.tsx
+Week 1,W1.9,Audio Alarm & Smoke Tests,Web Audio API alarm synthesizer and 12-assertion test suite,Member 4,Week 1,Completed,npm run test:telemetry (12/12 PASS)
+Week 1,W1.10,Canvas Scaffolding,Initialize React Flow drag-and-drop workflow canvas,Member 1,Week 1,In Progress,Canvas scaffold in progress
+Week 1,W1.11,Database Setup,Initialize MongoDB Time Series database collections,Member 2,Week 1,In Progress,MongoDB setup in progress
+Week 2,W2.1,Backend WebSocket Server,Node.js + Express backend with ws WebSocket gateway on port 4000,Member 4,Week 2,Completed,server/src/server.ts & wsServer.ts
+Week 2,W2.2,WebSocket Protocol Spec,Defined 8 bi-directional WebSocket event schemas,Member 4,Week 2,Completed,docs/websocket-protocol-spec.md
+Week 2,W2.3,REST Telemetry Endpoints,Ingestion API (/api/telemetry/ingest) and history endpoints,Member 4,Week 2,Completed,server/src/routes/telemetryRoutes.ts
+Week 2,W2.4,Live Telemetry Broadcaster,Continuous 1Hz background producer with rolling moving averages,Member 4,Week 2,Completed,server/src/services/telemetrySimulator.ts
+Week 2,W2.5,Frontend WebSocket Client,Singleton client with exponential backoff & RTT latency ping/pong,Member 4,Week 2,Completed,client/src/services/websocketClient.ts
+Week 2,W2.6,Static Baseline Inspector,Offline calibration tool computing deviation delta against ISO baselines,Member 4,Week 2,Completed,StaticBaselineInspector.tsx
+Week 2,W2.7,Ingestion Stress Benchmark,Demonstrated 146000 writes/sec exceeding 5000 writes/sec review target,Member 4,Week 2,Completed,server/scripts/ingestion-benchmark.js
+Week 2,W2.8,Node Library & Serialization,Implement source math and trigger nodes for React Flow,Member 1,Week 2,In Progress,Node serialization testing
+Week 2,W2.9,RxJS Logic Compiler,Parse React Flow JSON graph and map to RxJS stream operators,Member 3,Week 2,In Progress,Compiler logic design
+Week 3,W3.1,Graph Serialization,Export validated React Flow node graph to standard JSON format,Member 1,Week 3,Pending,Upcoming Week 3
+Week 3,W3.2,RxJS Pipeline Compiler,Convert serialized JSON nodes into executable RxJS Observable pipeline,Member 3,Week 3,Pending,Upcoming Week 3
+Week 3,W3.3,Live Pipeline Execution,Pipe real-time WebSocket telemetry through compiled RxJS rules,Members 2 & 3,Week 3,Pending,Upcoming Week 3
+Week 3,W3.4,Live Rule Alerts on Dashboard,Subscribe dashboard to rule:alert events and display real-time badges,Member 4,Week 3,Pending,Upcoming Week 3
+Week 3,W3.5,Visual Node Flow Feedback,Animate active data pulses across React Flow nodes on incoming data,Members 1 & 4,Week 3,Pending,Upcoming Week 3
+Week 4,W4.1,Outbound Webhooks,HTTP POST dispatcher sending JSON payloads to external webhook endpoints,Member 4,Week 4,Pending,Upcoming Week 4
+Week 4,W4.2,Mock SMS Notifications,Simulated SMS dispatch provider logging text alerts to operators,Member 4,Week 4,Pending,Upcoming Week 4
+Week 4,W4.3,MongoDB Production Storage,Store high-frequency telemetry in physical MongoDB Time Series collections,Member 2,Week 4,Pending,Upcoming Week 4
+Week 4,W4.4,End-to-End System Testing,Validate full flow from sensor ingestion to rule alert & webhook,All Members,Week 4,Pending,Upcoming Week 4
+Week 4,W4.5,UI Usability & Polish,Connection animations error toasts empty states and responsiveness,All Members,Week 4,Pending,Upcoming Week 4
+Week 4,W4.6,Final Demo & Documentation,Project report presentation slides and end-to-end video demonstration,All Members,Week 4,Pending,Upcoming Week 4

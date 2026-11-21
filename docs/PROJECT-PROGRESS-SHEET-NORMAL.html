@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusFlow Project Progress Sheet</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      color: #333;
+      line-height: 1.5;
+    }
+    .header-box {
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+      padding: 15px 20px;
+      border-radius: 6px;
+      margin-bottom: 25px;
+    }
+    .header-box h2 {
+      margin-top: 0;
+      color: #0b5394;
+    }
+    .header-box p {
+      margin: 4px 0;
+      font-size: 14px;
+    }
+    .top-action {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .btn {
+      background-color: #0b5394;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      font-size: 13px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .btn:hover {
+      background-color: #073763;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+      font-size: 12.5px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+      color: #111;
+      font-weight: bold;
+    }
+    tr:nth-child(even) {
+      background-color: #fafafa;
+    }
+    .status-completed {
+      color: #0d8050;
+      font-weight: bold;
+    }
+    .status-progress {
+      color: #b45f06;
+      font-weight: bold;
+    }
+    .status-pending {
+      color: #7f6000;
+    }
+    h3 {
+      color: #0b5394;
+      border-bottom: 2px solid #0b5394;
+      padding-bottom: 5px;
+      margin-top: 30px;
+    }
+    ul {
+      margin-top: 8px;
+      padding-left: 20px;
+      font-size: 13.5px;
+    }
+    li {
+      margin-bottom: 6px;
+    }
+    code {
+      background: #f0f0f0;
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-family: Consolas, monospace;
+      font-size: 12px;
+    }
+    @media print {
+      .top-action {
+        display: none;
+      }
+      body {
+        margin: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-action">
+    <button class="btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+  </div>
+
+  <div class="header-box">
+    <h2>NexusFlow — Project Progress Tracking Sheet</h2>
+    <p><strong>Project Title:</strong> NexusFlow – Visual IoT Telemetry & Rule Engine</p>
+    <p><strong>Project Scope:</strong> Full-Stack Industrial IoT (IIoT) Monitoring Platform</p>
+    <p><strong>Team Size:</strong> 4 Members &nbsp;|&nbsp; <strong>Project Duration:</strong> 4 Weeks</p>
+    <p><strong>Current Milestone:</strong> <strong>50% Completed</strong> (Weeks 1 & 2 Complete, Weeks 3 & 4 Upcoming)</p>
+    <p><strong>Date of Record:</strong> November 21, 2026 &nbsp;|&nbsp; <strong>Repository:</strong> <a href="https://github.com/prakharshukla2006/NexusFlow-Visual-IoT-Telemetry-Rule-Engine.git" target="_blank">GitHub Repository</a></p>
+  </div>
+
+  <h3>👥 Team Role Allocation</h3>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 15%;">Team Member</th>
+        <th style="width: 25%;">Assigned Role</th>
+        <th>Key Responsibilities</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Member 1</strong></td>
+        <td>Visual Workflow Canvas</td>
+        <td>React Flow drag-and-drop node builder, custom nodes, edge routing, JSON graph serialization</td>
+      </tr>
+      <tr>
+        <td><strong>Member 2</strong></td>
+        <td>Time-Series Database & Ingestion</td>
+        <td>MongoDB Time Series collections, REST ingestion API endpoints, 5,000 writes/sec load audit</td>
+      </tr>
+      <tr>
+        <td><strong>Member 3</strong></td>
+        <td>Stream Compiler & Rule Engine</td>
+        <td>JSON-to-RxJS pipeline compiler, windowing operators, threshold evaluation engine</td>
+      </tr>
+      <tr>
+        <td><strong>Member 4</strong><br><em>(Prakhar Shukla)</em></td>
+        <td>Real-Time Dashboard & Alerts</td>
+        <td>Recharts SCADA dashboard, WebSockets, metric cards, audio alerts, CSV export, test suite</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>📋 Detailed Task Progress Tracking</h3>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 8%;">Task ID</th>
+        <th style="width: 8%;">Phase</th>
+        <th style="width: 22%;">Task / Feature Name</th>
+        <th style="width: 12%;">Assigned</th>
+        <th style="width: 12%;">Status</th>
+        <th>Output / Deliverable Evidence</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>W1.01</td>
+        <td>Week 1</td>
+        <td>Chart Library ADR-001 Selection</td>
+        <td>Member 4</td>
+        <td><span class="status-completed">✅ Completed</span></td>
+        <td><code>docs/ADR-001-chart-library-selection.md</code> (Recharts chosen)</td>
+      </tr>
+      <tr>
+        <td>W1.02</td>
+        <td>Week 1</td>
+        <td>Frontend Client Scaffolding</td>
+        <td>Member 4</td>
+        <td><span class="status-completed">✅ Completed</span></td>
+        <td>React 18 + Vite + TypeScript + Tailwind CSS dark SCADA theme</td>
+      </tr>
+      <tr>
+        <td>W1.03</td>
+        <td>Week 1</td>
+        <td>Telemetry Models & Mock Generator</td>
+        <td>Member 4</td>
+        <td><span class="status-completed">✅ Completed</span></td>
+        <td><code>client/src/types/telemetry.ts</code> & 4-machine simulator</td>
+      </tr>
+      <tr>
+        <td>W1.04</td>
+        <td>Week 1</td>
+        <td>SCADA Layout, Sidebar & Navbar</td>
+        <td>Member 4</td>
+        <td><span class="status-completed">✅ Completed</span></td>
+        <td><code>AppLayout.tsx</code> with live clock and WS status</td>
+      </tr>
+      <tr>
+        <td>W1.05</td>
+        <td>Week 1</td>
+        <td>4x Telemetry Metric Cards</td>
+        <td>Member 4</td>
+        <td><span class="status-completed">✅ Completed</span></td>
+        <td><code>TelemetryMetricCard.tsx</code> (Temp, Vib, Pressure, RPM) + Sparklines</td>
+      </tr>
+      <tr>
+        <td>W1.06</td>
+        <td>Week 1</td>
+        <td>Multi-Metric Trends Chart</td>
+        <td>Member 4</td>
+        <td><span class="status-completed">✅ Completed</span></td>
+        <td><code>TelemetryTrendsChart.tsx</code> with Recharts timeline <code>&lt;Brush&gt;</code></td>
+      </tr>
+      <tr>
+        <td>W1.07</td>
+        <td>Week 1</td>
+        <td>Dual Synchronized & Fleet Views</td>
+        <td>Member 4</td>
+        <td><span class="status-completed">✅ Completed</span></td>
+        <td><code>DualMetricsComparisonChart.tsx</code> (syncId) & <code>FleetComparativeOverlayChart.tsx</code></td>
+      </tr>
+      <tr>
+        <td>W1.08</td>
+        <td>Week 1</td>
+        <td>Dynamic Thresholds & CSV Export</td>
+        <td>Member 4</td>
+        <td><span class="status-completed">✅ Completed</span></td>
+        <td><code>ThresholdConfigModal.tsx</code> & CSV download utility</td>
+      </tr>
+      <tr>
+        <td>W1.09</td>
+        <td>Week 1</td>
+        <td>Audio Alarm & 12 Smoke Tests</td>
+        <td>Member 4</td>
+        <td><span class="status-completed">✅ Completed</span></td>
+        <td>Web Audio alarm + <code>npm run test:telemetry</code> (12/12 PASS)</td>
+      </tr>
+      <tr>
+        <td>W1.10</td>
+        <td>Week 1</td>
+        <td>Canvas Scaffolding (React Flow)</td>
+        <td>Member 1</td>
+        <td><span class="status-progress">🟡 In Progress</span></td>
+        <td>React Flow drag-and-drop workspace scaffolding</td>
+      </tr>
+      <tr>
+        <td>W1.11</td>
+        <td>Week 1</td>
+        <td>Database Time-Series Setup</td>
+        <td>Member 2</td>
+        <td><span class="status-progress">🟡 In Progress</span></td>
+        <td>MongoDB Time Series collections & test data scripts</td>
+      </tr>
+      <tr>
+        <td>W2.01</td>
+        <td>Week 2</td>
+        <td>Express Server & WebSocket Hub</td>
+        <td>Member 4</td>
+        <td><span class="status-completed">✅ Completed</span></td>
+        <td><code>server/src/server.ts</code> on port 4000 (ws://localhost:4000/ws/telemetry)</td>
+      </tr>
+      <tr>
+        <td>W2.02</td>
+        <td>Week 2</td>
+        <td>WebSocket Protocol Specification</td>
+        <td>Member 4</td>
+        <td><span class="status-completed">✅ Completed</span></td>
+        <td><code>docs/websocket-protocol-spec.md</code> (8 event schemas)</td>
+      </tr>
+      <tr>
+        <td>W2.03</td>
+        <td>Week 2</td>
+        <td>REST Ingestion & History Endpoints</td>
+        <td>Member 4</td>
+        <td><span class="status-completed">✅ Completed</span></td>
+        <td><code>POST /api/telemetry/ingest</code> & <code>GET /api/telemetry/history</code></td>
+      </tr>
+      <tr>
+        <td>W2.04</td>
+        <td>Week 2</td>
+        <td>Continuous 1Hz Broadcaster</td>
+        <td>Member 4</td>
+        <td><span class="status-completed">✅ Completed</span></td>
+        <td><code>telemetrySimulator.ts</code> with rolling moving average & anomalies</td>
+      </tr>
+      <tr>
+        <td>W2.05</td>
+        <td>Week 2</td>
+        <td>Frontend WebSocket Client & Hook</td>
+        <td>Member 4</td>
+        <td><span class="status-completed">✅ Completed</span></td>
+        <td><code>websocketClient.ts</code> & <code>useWebSocketTelemetry.ts</code> with RTT latency</td>
+      </tr>
+      <tr>
+        <td>W2.06</td>
+        <td>Week 2</td>
+        <td>Static Baseline Calibration Tool</td>
+        <td>Member 4</td>
+        <td><span class="status-completed">✅ Completed</span></td>
+        <td><code>StaticBaselineInspector.tsx</code> (tolerance deviation delta Δ)</td>
+      </tr>
+      <tr>
+        <td>W2.07</td>
+        <td>Week 2</td>
+        <td>5,000 writes/sec Stress Benchmark</td>
+        <td>Member 4</td>
+        <td><span class="status-completed">✅ Completed</span></td>
+        <td><code>ingestion-benchmark.js</code> (achieved <strong>146,842 writes/sec</strong>)</td>
+      </tr>
+      <tr>
+        <td>W2.08</td>
+        <td>Week 2</td>
+        <td>React Flow Node Library</td>
+        <td>Member 1</td>
+        <td><span class="status-progress">🟡 In Progress</span></td>
+        <td>Source, math, and action trigger nodes</td>
+      </tr>
+      <tr>
+        <td>W2.09</td>
+        <td>Week 2</td>
+        <td>RxJS Logic Compiler & Validator</td>
+        <td>Member 3</td>
+        <td><span class="status-progress">🟡 In Progress</span></td>
+        <td>Validating JSON graph and mapping to RxJS stream operators</td>
+      </tr>
+      <tr>
+        <td>W3.01</td>
+        <td>Week 3</td>
+        <td>Node Graph JSON Serialization</td>
+        <td>Member 1</td>
+        <td><span class="status-pending">⏳ Pending</span></td>
+        <td>Export user-created React Flow graph as clean JSON</td>
+      </tr>
+      <tr>
+        <td>W3.02</td>
+        <td>Week 3</td>
+        <td>RxJS Observable Pipeline Compiler</td>
+        <td>Member 3</td>
+        <td><span class="status-pending">⏳ Pending</span></td>
+        <td>Compile JSON nodes into executable RxJS streaming pipeline</td>
+      </tr>
+      <tr>
+        <td>W3.03</td>
+        <td>Week 3</td>
+        <td>Live Rule Execution on Influx</td>
+        <td>Members 2 & 3</td>
+        <td><span class="status-pending">⏳ Pending</span></td>
+        <td>Feed real-time telemetry through compiled RxJS rules</td>
+      </tr>
+      <tr>
+        <td>W3.04</td>
+        <td>Week 3</td>
+        <td>Live Rule Alerts on Dashboard</td>
+        <td>Member 4</td>
+        <td><span class="status-pending">⏳ Pending</span></td>
+        <td>Display dynamic alert cards and audio notifications on rule trigger</td>
+      </tr>
+      <tr>
+        <td>W3.05</td>
+        <td>Week 3</td>
+        <td>Canvas Data Flow Pulsing Animation</td>
+        <td>Members 1 & 4</td>
+        <td><span class="status-pending">⏳ Pending</span></td>
+        <td>Visual glowing edge feedback as telemetry moves through nodes</td>
+      </tr>
+      <tr>
+        <td>W4.01</td>
+        <td>Week 4</td>
+        <td>Outbound Webhook Dispatcher</td>
+        <td>Member 4</td>
+        <td><span class="status-pending">⏳ Pending</span></td>
+        <td>HTTP POST dispatcher sending alerts to external endpoints</td>
+      </tr>
+      <tr>
+        <td>W4.02</td>
+        <td>Week 4</td>
+        <td>Mock SMS Alert Integration</td>
+        <td>Member 4</td>
+        <td><span class="status-pending">⏳ Pending</span></td>
+        <td>Simulated SMS delivery provider logging outbound messages</td>
+      </tr>
+      <tr>
+        <td>W4.03</td>
+        <td>Week 4</td>
+        <td>MongoDB Production Time-Series</td>
+        <td>Member 2</td>
+        <td><span class="status-pending">⏳ Pending</span></td>
+        <td>High-frequency physical persistence in MongoDB collections</td>
+      </tr>
+      <tr>
+        <td>W4.04</td>
+        <td>Week 4</td>
+        <td>End-to-End System Testing</td>
+        <td>All Members</td>
+        <td><span class="status-pending">⏳ Pending</span></td>
+        <td>Sensor → Ingest → RxJS Rule → DB → WebSocket → Dashboard & Webhook</td>
+      </tr>
+      <tr>
+        <td>W4.05</td>
+        <td>Week 4</td>
+        <td>UI/UX Usability Polish</td>
+        <td>All Members</td>
+        <td><span class="status-pending">⏳ Pending</span></td>
+        <td>Empty states, error alerts, responsive layout refinements</td>
+      </tr>
+      <tr>
+        <td>W4.06</td>
+        <td>Week 4</td>
+        <td>Final Report & Video Demo</td>
+        <td>All Members</td>
+        <td><span class="status-pending">⏳ Pending</span></td>
+        <td>Final project documentation, demo recording, and slides</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>✅ Summary: What is Completed</h3>
+  <ul>
+    <li><strong>Full SCADA Frontend:</strong> Live dashboard with 4 metric cards, Recharts multi-metric trends with brush scrubber, dual synchronized charts, 4-unit fleet comparative overlay, frequency histogram, dynamic threshold modal, CSV export, and Web Audio alarm.</li>
+    <li><strong>Backend Streaming Service:</strong> Express REST API on port 4000, RFC 6455 WebSocket hub on <code>/ws/telemetry</code>, 1Hz live broadcaster, and <code>useWebSocketTelemetry</code> React hook.</li>
+    <li><strong>Benchmarks & Tests:</strong> 12 automated smoke test assertions passing (100%), and 5k writes/sec ingestion benchmark recording 146,000+ writes/sec.</li>
+    <li><strong>Version Control:</strong> 16 clean commits pushed to GitHub <code>main</code>.</li>
+  </ul>
+
+  <h3>⏳ Summary: What is Left / Pending</h3>
+  <ul>
+    <li><strong>Week 3:</strong> Finalize React Flow node serialization (Member 1) $\rightarrow$ compile into RxJS stream pipeline (Member 3) $\rightarrow$ evaluate rules on live incoming telemetry $\rightarrow$ push alerts to dashboard (Member 4).</li>
+    <li><strong>Week 4:</strong> Implement outbound webhook and mock SMS integration (Member 4) $\rightarrow$ connect physical MongoDB Time Series store (Member 2) $\rightarrow$ conduct end-to-end testing $\rightarrow$ produce demo video and final submission.</li>
+  </ul>
+
+</body>
+</html>
