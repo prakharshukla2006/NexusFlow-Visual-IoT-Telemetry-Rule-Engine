@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusFlow — Complete Project Progress & Team Tracking Sheet</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card-bg: #0f172a;
+      --card-border: #1e293b;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --primary: #06b6d4;
+      --accent: #3b82f6;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #f43f5e;
+      --code-bg: #020617;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 30px 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* Print / Export Bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1e293b;
+      padding: 14px 20px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      border: 1px solid #334155;
+    }
+
+    .top-bar span {
+      font-size: 13px;
+      color: #94a3b8;
+      font-family: monospace;
+    }
+
+    .btn-print {
+      background: #06b6d4;
+      color: #042f2e;
+      border: none;
+      padding: 8px 18px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-print:hover {
+      background: #22d3ee;
+      transform: translateY(-1px);
+    }
+
+    h1, h2, h3, h4 {
+      color: #ffffff;
+      margin-top: 25px;
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+
+    h1 {
+      font-size: 26px;
+      border-bottom: 2px solid #1e293b;
+      padding-bottom: 12px;
+      color: #38bdf8;
+    }
+
+    h2 {
+      font-size: 20px;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 8px;
+      margin-top: 35px;
+      color: #f1f5f9;
+    }
+
+    h3 {
+      font-size: 16px;
+      color: #38bdf8;
+    }
+
+    p {
+      margin-bottom: 12px;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .meta-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 25px;
+      font-size: 13.5px;
+    }
+
+    .meta-card p {
+      margin-bottom: 6px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: monospace;
+    }
+
+    .badge-success { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .badge-warning { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .badge-info { background: rgba(6, 182, 212, 0.2); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.4); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+      font-size: 13px;
+      background: var(--card-bg);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+    }
+
+    th, td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    th {
+      background: #1e293b;
+      color: #f8fafc;
+      font-weight: 600;
+      font-size: 12.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    tr:hover td {
+      background: rgba(30, 41, 59, 0.5);
+    }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      overflow-x: auto;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 12px;
+      color: #93c5fd;
+      line-height: 1.5;
+      margin: 14px 0;
+    }
+
+    code {
+      background: #1e293b;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 12px;
+      color: #38bdf8;
+    }
+
+    ul, ol {
+      margin-left: 24px;
+      margin-bottom: 16px;
+      font-size: 13.5px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    a {
+      color: #38bdf8;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Print View Styles (Automatic on Ctrl+P) */
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        padding: 0;
+      }
+      .top-bar {
+        display: none !important;
+      }
+      h1, h2, h3 {
+        color: #0f172a !important;
+      }
+      h1 { border-color: #cbd5e1 !important; color: #0284c7 !important; }
+      h2 { border-color: #e2e8f0 !important; }
+      table {
+        background: #ffffff !important;
+        border-color: #cbd5e1 !important;
+        color: #0f172a !important;
+      }
+      th {
+        background: #f1f5f9 !important;
+        color: #0f172a !important;
+        border-color: #cbd5e1 !important;
+      }
+      td {
+        border-color: #e2e8f0 !important;
+      }
+      pre {
+        background: #f8fafc !important;
+        border-color: #cbd5e1 !important;
+        color: #0f172a !important;
+      }
+      code {
+        background: #f1f5f9 !important;
+        color: #0284c7 !important;
+      }
+      .meta-card {
+        background: #f8fafc !important;
+        border-color: #cbd5e1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <span>📄 Ready for Print / PDF Export</span>
+      <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+    </div>
+
+    <h1>📋 NexusFlow — Complete Project Progress & Team Tracking Sheet</h1>
+
+    <div class="meta-card">
+      <p><strong>Project:</strong> NexusFlow – Visual IoT Telemetry & Rule Engine</p>
+      <p><strong>Repository:</strong> <a href="https://github.com/prakharshukla2006/NexusFlow-Visual-IoT-Telemetry-Rule-Engine.git" target="_blank">github.com/prakharshukla2006/NexusFlow-Visual-IoT-Telemetry-Rule-Engine</a> (Branch: <code>main</code>)</p>
+      <p><strong>Milestone Status:</strong> <span class="badge badge-success">Weeks 1 & 2 Completed (16 Commits)</span> &nbsp; <span class="badge badge-info">Weeks 3 & 4 Defined</span></p>
+      <p><strong>Last Updated:</strong> November 21, 2026</p>
+    </div>
+
+    <h2>👥 1. Team Structure & Responsibility Matrix</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Member</th>
+          <th>Assigned Scope / Role</th>
+          <th>Core Responsibilities</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Member 1</strong></td>
+          <td>Visual Workflow Canvas</td>
+          <td>React Flow drag-and-drop editor, custom node library, edge routing, JSON graph serialization</td>
+          <td><span class="badge badge-warning">In Progress</span></td>
+        </tr>
+        <tr>
+          <td><strong>Member 2</strong></td>
+          <td>Time-Series Ingestion & DB</td>
+          <td>MongoDB Time Series collections, REST ingestion API, 5,000 writes/sec stress audit, indexing</td>
+          <td><span class="badge badge-warning">In Progress</span></td>
+        </tr>
+        <tr>
+          <td><strong>Member 3</strong></td>
+          <td>Stream Compiler & Rule Engine</td>
+          <td>JSON-to-RxJS graph compiler, reactive stream operators, sliding window buffers, threshold logic</td>
+          <td><span class="badge badge-warning">In Progress</span></td>
+        </tr>
+        <tr>
+          <td><strong>Member 4</strong><br><em>(Prakhar Shukla)</em></td>
+          <td>Real-Time Dashboard & Alerts</td>
+          <td>Recharts SCADA dashboard, WebSocket bidirectional event bridge, metric cards, audio alarm, fleet overlay, test suite</td>
+          <td><span class="badge badge-success">Completed (Weeks 1 & 2)</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>🏛️ 2. System Architecture & Data Pipeline</h2>
+    <pre>
+  ┌────────────────────────────────────────────────────────────────────────┐
+  │                           EXTERNAL / DEVICES                           │
+  │   Industrial Sensors (Turbines, Compressors, Pumps, Generators)        │
+  └───────────────────┬────────────────────────────────┬───────────────────┘
+                      │ HTTP POST (Ingest API)         │ WebSocket (1Hz Broadcaster)
+                      ▼                                ▼
+  ┌────────────────────────────────────────────────────────────────────────┐
+  │                    BACKEND ENGINE (Node.js + Express)                  │
+  │                                                                        │
+  │  ┌──────────────────────┐   ┌───────────────────┐   ┌───────────────┐  │
+  │  │ REST Ingestion API   │   │ Stream Broadcaster│   │ WebSocket Hub │  │
+  │  │ /api/telemetry/ingest│──▶│ /ws/telemetry     │◀──│ (RFC 6455)    │  │
+  │  └──────────┬───────────┘   └─────────┬─────────┘   └───────┬───────┘  │
+  │             │                         │                     │          │
+  │             ▼                         ▼                     │          │
+  │  ┌──────────────────────┐   ┌───────────────────┐           │          │
+  │  │ RxJS Rule Compiler   │   │ MongoDB TS Engine │           │          │
+  │  │ (Graph-to-Observable)│   │ Time Series Store │           │          │
+  │  └──────────┬───────────┘   └───────────────────┘           │          │
+  └─────────────┼───────────────────────────────────────────────┼──────────┘
+                │ Alert Triggers                                │ Telemetry Frames
+                ▼                                               ▼
+  ┌────────────────────────────────────────────────────────────────────────┐
+  │                    FRONTEND CLIENT (React 18 + Vite)                   │
+  │                                                                        │
+  │  ┌──────────────────────┐                   ┌───────────────────────┐  │
+  │  │ Visual Rule Canvas   │                   │ SCADA Dashboard       │  │
+  │  │ (React Flow Nodes)   │                   │ (Recharts Visualizer) │  │
+  │  └──────────────────────┘                   └───────────────────────┘  │
+  │             ▲                                           ▲              │
+  │             └─────────────────────┬─────────────────────┘              │
+  │                                   │                                    │
+  │                     ┌─────────────┴─────────────┐                      │
+  │                     │ WebSocket Client Hook     │                      │
+  │                     │ (useWebSocketTelemetry)   │                      │
+  │                     └───────────────────────────┘                      │
+  └────────────────────────────────────────────────────────────────────────┘
+    </pre>
+
+    <h2>✅ 3. Completed Work: Every Step Explained (Weeks 1 & 2)</h2>
+    <h3>Phase A: Foundation & Architecture (Week 1)</h3>
+    <ul>
+      <li><strong>ADR-001 Chart Library Selection:</strong> Formally evaluated Recharts vs Chart.js. Selected Recharts for declarative React composition, crisp SVG vector rendering, and native reference line support.</li>
+      <li><strong>Frontend Scaffolding:</strong> Bootstrapped React 18, Vite, TypeScript, and Tailwind CSS with an industrial dark SCADA theme.</li>
+      <li><strong>TypeScript Domain Models:</strong> Defined strict interfaces for machines, telemetry metrics, sliding-window buffers, and rule alerts.</li>
+      <li><strong>Industrial Telemetry Simulation Engine:</strong> Built realistic 4-machine simulator with 5-point moving average smoothing and controlled anomaly injection.</li>
+      <li><strong>SCADA Shell & Navigation:</strong> Built responsive AppLayout, collapsible Sidebar, and Navbar with real-time clock and WebSocket state.</li>
+    </ul>
+
+    <h3>Phase B: Advanced SCADA Visualizations & Controls (Week 1)</h3>
+    <ul>
+      <li><strong>4x Telemetry Metric Cards:</strong> Real-time display for Temperature (°C), Vibration (mm/s), Pressure (bar), and RPM with custom SVG sparklines.</li>
+      <li><strong>Multi-Metric Trends Chart:</strong> Recharts AreaChart with linear gradients, moving-average overlay, warning/critical markers, and timeline <code>&lt;Brush&gt;</code> scrubber.</li>
+      <li><strong>Dual Synchronized Comparison View:</strong> Crosshair scrubbing across Temperature and Vibration graphs using Recharts <code>syncId</code>.</li>
+      <li><strong>Fleet Comparative Influx Overlay:</strong> Recharts LineChart comparing all 4 production units with real-time fleet average and spread delta.</li>
+      <li><strong>Operational Band Distribution Histogram:</strong> Recharts BarChart segmenting telemetry into 4 operational zones with mean and standard deviation.</li>
+      <li><strong>Equipment Health Radar:</strong> Radar polygon visualizing machine balance equilibrium across 5 normalized operational axes.</li>
+      <li><strong>SCADA Controls:</strong> Stream pause/resume, 0.5x/1x/2x speed controls, and dynamic threshold adjustment modal.</li>
+      <li><strong>Web Audio API Alarm:</strong> Dual-tone audible beeps for critical threshold violations with operator mute control.</li>
+    </ul>
+
+    <h3>Phase C: Backend Ingestion & WebSocket Engine (Week 2)</h3>
+    <ul>
+      <li><strong>Express & WebSocket Gateway:</strong> Node.js backend on port <code>4000</code> with RFC 6455 WebSocket gateway on <code>ws://localhost:4000/ws/telemetry</code>.</li>
+      <li><strong>WebSocket Protocol Specification:</strong> Documented 8 bi-directional schemas for telemetry data, subscriptions, alerts, and heartbeat ping/pongs.</li>
+      <li><strong>REST Endpoints:</strong> Ingestion API (<code>POST /api/telemetry/ingest</code>), history endpoint (<code>GET /api/telemetry/history/:machineId</code>), and fleet metadata.</li>
+      <li><strong>1Hz Live Broadcaster:</strong> Background producer broadcasting real-time sensor frames with moving averages and anomaly triggers.</li>
+      <li><strong>Frontend WebSocket Client & Hook:</strong> Singleton client with exponential backoff and <code>useWebSocketTelemetry</code> React hook measuring live RTT latency.</li>
+      <li><strong>Static Baseline Calibration Inspector:</strong> Compares real-time readings against ISO golden run baselines and computes tolerance deltas.</li>
+      <li><strong>5,000 writes/sec Ingestion Benchmark:</strong> Tested 10,000 frames in 500-sample batches; achieved <strong>146,842 writes/sec</strong>, exceeding project review target.</li>
+    </ul>
+
+    <h2>🧪 4. Automated Smoke Test Verification (12 Passed)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Test #</th>
+          <th>Test Name & Scope</th>
+          <th>Assertion Criteria</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Test 1</strong></td><td>5-Point Moving Average</td><td>Vector [80, 82, 84, 86, 88] averages to 84.0°C</td><td><span class="badge badge-success">✓ PASS</span></td></tr>
+        <tr><td><strong>Test 2</strong></td><td>Signal Noise Smoothing</td><td>95°C spike smoothed to 80°C nominal baseline</td><td><span class="badge badge-success">✓ PASS</span></td></tr>
+        <tr><td><strong>Test 3</strong></td><td>Safe Threshold Boundary</td><td>84.9°C evaluates within safe limit (&lt; 85.0°C)</td><td><span class="badge badge-success">✓ PASS</span></td></tr>
+        <tr><td><strong>Test 4</strong></td><td>Critical Anomaly Trigger</td><td>85.1°C evaluates as critical anomaly (&gt; 85.0°C)</td><td><span class="badge badge-success">✓ PASS</span></td></tr>
+        <tr><td><strong>Test 5</strong></td><td>Sliding Buffer Capacity</td><td>Buffer size strictly capped at 30 samples</td><td><span class="badge badge-success">✓ PASS</span></td></tr>
+        <tr><td><strong>Test 6</strong></td><td>Buffer FIFO Eviction</td><td>Newest at head (idx 49), oldest discarded (idx 20)</td><td><span class="badge badge-success">✓ PASS</span></td></tr>
+        <tr><td><strong>Test 7</strong></td><td>CSV Serialization Format</td><td>Export row contains machine ID, timestamp, and metrics</td><td><span class="badge badge-success">✓ PASS</span></td></tr>
+        <tr><td><strong>Test 8</strong></td><td>Physical Sensor Bounds</td><td>Readings stay within physical bounds (Temp 0-150°C)</td><td><span class="badge badge-success">✓ PASS</span></td></tr>
+        <tr><td><strong>Test 9</strong></td><td>Fleet Multi-Unit Sync</td><td>Overlay synchronizes all 4 plant units (T-101, C-202, P-303, G-404)</td><td><span class="badge badge-success">✓ PASS</span></td></tr>
+        <tr><td><strong>Test 10</strong></td><td>Fleet Spread Delta</td><td>Spread delta correctly calculated as 17.6°C (Max - Min)</td><td><span class="badge badge-success">✓ PASS</span></td></tr>
+        <tr><td><strong>Test 11</strong></td><td>Histogram Sum Invariant</td><td>Frequency distribution percentage sums to exactly 100.0%</td><td><span class="badge badge-success">✓ PASS</span></td></tr>
+        <tr><td><strong>Test 12</strong></td><td>Anomaly Jitter Hysteresis</td><td>Identifies 2 excursions in noisy jitter signal without false drops</td><td><span class="badge badge-success">✓ PASS</span></td></tr>
+      </tbody>
+    </table>
+
+    <h2>⏳ 5. What is Left and Has to Be Done (Roadmap for Weeks 3 & 4)</h2>
+    <h3>Week 3: Live Rule Execution & Dynamic Pipeline Integration</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Task Item</th>
+          <th>Owner</th>
+          <th>Description & Deliverables</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. React Flow Graph Serialization</strong></td>
+          <td>Member 1</td>
+          <td>Finalize JSON export schema of user-created node graphs (Source → Moving Average → Threshold → Alert).</td>
+        </tr>
+        <tr>
+          <td><strong>2. RxJS Pipeline Compiler</strong></td>
+          <td>Member 3</td>
+          <td>Read serialized JSON graph and compile nodes into dynamic RxJS Observable pipelines (<code>bufferCount</code>, <code>map</code>, <code>filter</code>).</td>
+        </tr>
+        <tr>
+          <td><strong>3. Stream Routing & Execution</strong></td>
+          <td>Members 2 & 3</td>
+          <td>Pipe incoming WebSocket/HTTP telemetry directly through compiled RxJS pipelines in real time.</td>
+        </tr>
+        <tr>
+          <td><strong>4. Live Rule Event Display</strong></td>
+          <td>Member 4</td>
+          <td>Connect dashboard alerts feed to incoming <code>rule:alert</code> WebSocket events with live alert badges.</td>
+        </tr>
+        <tr>
+          <td><strong>5. Canvas Data Flow Animation</strong></td>
+          <td>Members 1 & 4</td>
+          <td>Provide visual node pulsing/edge glowing on React Flow canvas when live telemetry passes through active nodes.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Week 4: Outbound Integrations, Final Polish & Review</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Task Item</th>
+          <th>Owner</th>
+          <th>Description & Deliverables</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Outbound Webhook Integration</strong></td>
+          <td>Member 4</td>
+          <td>HTTP POST dispatcher sending JSON alert payloads to external endpoints when a rule evaluates to true.</td>
+        </tr>
+        <tr>
+          <td><strong>2. Mock SMS Notification Provider</strong></td>
+          <td>Member 4</td>
+          <td>Simulated SMS dispatch service logging outbound SMS alerts (formatted for Twilio payload).</td>
+        </tr>
+        <tr>
+          <td><strong>3. MongoDB Time Series Production Store</strong></td>
+          <td>Member 2</td>
+          <td>Connect live ingestion stream to physical MongoDB 5.0+ Time Series collection.</td>
+        </tr>
+        <tr>
+          <td><strong>4. End-to-End System Integration</strong></td>
+          <td>All Members</td>
+          <td>Verify full flow: Sensors → Ingest API → RxJS Rule Engine → MongoDB → WebSocket → Dashboard & Webhook.</td>
+        </tr>
+        <tr>
+          <td><strong>5. UI Polish & Usability</strong></td>
+          <td>Members 1 & 4</td>
+          <td>Validation error messages, toast notifications, empty states, and responsive design refinement.</td>
+        </tr>
+        <tr>
+          <td><strong>6. Final Demo & Documentation</strong></td>
+          <td>All Members</td>
+          <td>Complete setup guide, sample workflow export files, presentation slides, and video demonstration.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>💻 6. Local Execution Commands (For Any Group Member)</h2>
+    <pre>
+# Terminal 1: Backend WebSocket & REST Service (Port 4000)
+cd server
+npm install
+npm start
+
+# Terminal 2: Frontend SCADA Dashboard (Port 5173)
+cd client
+npm install
+npm run dev
+
+# Run Automated Test Suite (12 Assertions)
+cd client
+npm run test:telemetry
+
+# Run Ingestion Benchmark (5k writes/sec validation)
+cd server
+node scripts/ingestion-benchmark.js
+    </pre>
+
+    <h2>📜 7. Full Commit Log on GitHub (16 Commits)</h2>
+    <p>All commits are pushed and available on the <code>main</code> branch of your GitHub repository:</p>
+    <ul>
+      <li><code>9fa29c5</code> — docs: create comprehensive project progress and team tracking sheet for all members</li>
+      <li><code>1b99baa</code> — feat(dashboard): add fleet comparative Recharts overlay, metric distribution histogram, and quickstart runbook</li>
+      <li><code>dd18e48</code> — feat(dashboard): add Recharts timeline brush scrubber, equipment health radar, and operator manual</li>
+      <li><code>22d4c18</code> — docs(week-1): consolidate full Week 1 comprehensive report, architecture diagrams, and test suite results</li>
+      <li><code>e9e58a7</code> — feat(dashboard): add static baseline calibration inspector and 5k writes/sec ingestion benchmark</li>
+      <li><code>eccb1cf</code> — feat(dashboard): connect static dashboard charts, live/static mode switcher, and Week 2 progress docs</li>
+      <li><code>cbf98b8</code> — feat(client): integrate WebSocket client hook with connection state, ping monitoring, and stream buffering</li>
+      <li><code>8f1438d</code> — feat(server): implement telemetry ingestion API, static history endpoints, and event broadcaster</li>
+      <li><code>7fa3ecd</code> — feat(server): initialize Express backend with WebSocket server and telemetry event schema</li>
+      <li><code>ae5ad28</code> — feat(dashboard): add dual synchronized Recharts view, playback controls, and smoke tests</li>
+      <li><code>935c823</code> — feat(dashboard): add dynamic rule threshold modal and telemetry CSV export for Week 1</li>
+      <li><code>675e489</code> — docs: complete Week 1 write-up and progress documentation</li>
+      <li><code>4c2dcf3</code> — feat(dashboard): add machine fleet status grid and recent alert event panel</li>
+      <li><code>1f0414d</code> — feat(dashboard): implement multi-metric telemetry trends chart using Recharts</li>
+      <li><code>914eed4</code> — feat(dashboard): build telemetry metric cards with trend indicators and status badges</li>
+      <li><code>6ffe16d</code> — feat(layout): construct industrial dashboard shell, sidebar navigation, and header</li>
+      <li><code>e9c1f71</code> — feat(dashboard): implement industrial telemetry mock data generator and utilities</li>
+    </ul>
+  </div>
+</body>
+</html>
