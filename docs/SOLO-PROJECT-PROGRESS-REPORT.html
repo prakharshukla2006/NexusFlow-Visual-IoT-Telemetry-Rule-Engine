@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusFlow — Solo Project Progress Report</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 10mm 12mm;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      color: #222;
+      line-height: 1.35;
+      font-size: 11.5px;
+    }
+    .header-box {
+      border: 1px solid #0b5394;
+      background-color: #f0f6fc;
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+    .header-box h1 {
+      margin: 0 0 4px 0;
+      color: #0b5394;
+      font-size: 18px;
+    }
+    .header-box .subtitle {
+      font-size: 12px;
+      color: #333;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px 20px;
+      font-size: 11.5px;
+    }
+    .meta-grid p {
+      margin: 1px 0;
+    }
+    .top-action {
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .btn {
+      background-color: #0b5394;
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      font-size: 11.5px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    h2 {
+      color: #0b5394;
+      border-bottom: 1.5px solid #0b5394;
+      padding-bottom: 3px;
+      margin-top: 14px;
+      margin-bottom: 8px;
+      font-size: 13.5px;
+      page-break-after: avoid;
+    }
+    h3 {
+      color: #1a365d;
+      margin-top: 10px;
+      margin-bottom: 4px;
+      font-size: 12px;
+      page-break-after: avoid;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 12px;
+      font-size: 10px;
+    }
+    tr {
+      page-break-inside: avoid;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 4px 6px;
+      text-align: left;
+    }
+    th {
+      background-color: #e2e8f0;
+      color: #0f172a;
+      font-weight: bold;
+    }
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+    .badge {
+      display: inline-block;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 9.5px;
+      font-weight: bold;
+    }
+    .badge-success { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+    .badge-pending { background: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+    ul {
+      margin-top: 3px;
+      margin-bottom: 8px;
+      padding-left: 18px;
+      font-size: 11.5px;
+    }
+    li {
+      margin-bottom: 2px;
+    }
+    code {
+      background: #f1f5f9;
+      padding: 1px 3px;
+      border-radius: 3px;
+      font-family: Consolas, monospace;
+      font-size: 10px;
+      color: #0369a1;
+    }
+    @media print {
+      .top-action {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-action">
+    <button class="btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+  </div>
+
+  <div class="header-box">
+    <h1>NexusFlow — Comprehensive Solo Project Progress Report</h1>
+    <div class="subtitle">Visual IoT Telemetry & Rule Engine (End-to-End Solo Implementation)</div>
+    <div class="meta-grid">
+      <div>
+        <p><strong>Developer:</strong> Prakhar Shukla (Solo Developer / Full-Stack Architect)</p>
+        <p><strong>Project Type:</strong> Full-Stack Industrial IoT (IIoT) Platform</p>
+        <p><strong>Project Duration:</strong> 4 Weeks</p>
+      </div>
+      <div>
+        <p><strong>Current Milestone:</strong> <strong>50% Completed</strong> (Weeks 1 & 2 Complete, Weeks 3 & 4 Defined)</p>
+        <p><strong>Date:</strong> November 21, 2026</p>
+        <p><strong>Repository:</strong> <a href="https://github.com/prakharshukla2006/NexusFlow-Visual-IoT-Telemetry-Rule-Engine.git" target="_blank">github.com/prakharshukla2006/NexusFlow</a></p>
+      </div>
+    </div>
+  </div>
+
+  <h2>📌 1. Project Abstract & Solo Architecture Overview</h2>
+  <p>
+    <strong>NexusFlow</strong> is an end-to-end web-based Industrial Internet of Things (IIoT) platform designed to ingest high-frequency telemetry from industrial equipment (gas turbines, compressors, pumps, generators), evaluate user-configurable rules in real time, and trigger responsive alerts (webhooks, SMS) and live SCADA visualizations.
+  </p>
+  <p>
+    As the <strong>sole developer</strong>, I am implementing all four architectural tiers of the application across the 4-week development plan:
+  </p>
+  <ul>
+    <li><strong>Frontend SCADA Visualization Tier:</strong> React 18, Vite, TypeScript, Tailwind CSS, and Recharts with synchronized multi-sensor monitoring.</li>
+    <li><strong>High-Frequency Ingestion & Communication Tier:</strong> Node.js, Express, and RFC 6455 WebSocket gateway delivering sub-second updates.</li>
+    <li><strong>Visual Workflow Canvas & Stream Processing Tier:</strong> React Flow node-based editor compiling into reactive RxJS <code>Observable</code> pipelines.</li>
+    <li><strong>Time-Series Persistence & Alert Integration Tier:</strong> MongoDB Time Series storage, HTTP outbound webhooks, and mock SMS dispatchers.</li>
+  </ul>
+
+  <h2>📋 2. Comprehensive 4-Week Solo Task Tracking Sheet</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 8%;">Task ID</th>
+        <th style="width: 8%;">Week</th>
+        <th style="width: 24%;">Module & Task Name</th>
+        <th style="width: 32%;">Technical Scope & Implementation</th>
+        <th style="width: 12%;">Status</th>
+        <th style="width: 16%;">Deliverable Evidence</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- WEEK 1 -->
+      <tr>
+        <td><strong>T1.01</strong></td>
+        <td>Week 1</td>
+        <td>Architecture Decision (ADR-001)</td>
+        <td>Benchmarked Recharts vs. Chart.js for streaming telemetry; selected Recharts for declarative React 18 integration and SVG crispness.</td>
+        <td><span class="badge badge-success">✅ Completed</span></td>
+        <td><code>docs/ADR-001.md</code></td>
+      </tr>
+      <tr>
+        <td><strong>T1.02</strong></td>
+        <td>Week 1</td>
+        <td>Frontend Client Scaffolding</td>
+        <td>Configured React 18, Vite, TypeScript, and Tailwind CSS with industrial dark SCADA theme and color tokens.</td>
+        <td><span class="badge badge-success">✅ Completed</span></td>
+        <td><code>client/package.json</code></td>
+      </tr>
+      <tr>
+        <td><strong>T1.03</strong></td>
+        <td>Week 1</td>
+        <td>Type-Safe Domain Modeling</td>
+        <td>Defined strict TypeScript interfaces for machines, metrics, sliding-window buffers, threshold limits, and rule alerts.</td>
+        <td><span class="badge badge-success">✅ Completed</span></td>
+        <td><code>types/telemetry.ts</code></td>
+      </tr>
+      <tr>
+        <td><strong>T1.04</strong></td>
+        <td>Week 1</td>
+        <td>Telemetry Simulation Engine</td>
+        <td>Built multi-unit simulator for 4 machines (T-101, C-202, P-303, G-404) with 5-point moving average smoothing and anomaly injection.</td>
+        <td><span class="badge badge-success">✅ Completed</span></td>
+        <td><code>mockTelemetry.ts</code></td>
+      </tr>
+      <tr>
+        <td><strong>T1.05</strong></td>
+        <td>Week 1</td>
+        <td>SCADA Shell & Navigation</td>
+        <td>Responsive AppLayout, collapsible Sidebar navigation, and SCADA Navbar with real-time clock and WebSocket state.</td>
+        <td><span class="badge badge-success">✅ Completed</span></td>
+        <td><code>AppLayout.tsx</code></td>
+      </tr>
+      <tr>
+        <td><strong>T1.06</strong></td>
+        <td>Week 1</td>
+        <td>Telemetry Metric Cards</td>
+        <td>4 real-time sensor cards (Temp, Vib, Pressure, RPM) with warning/critical threshold states and custom SVG sparklines.</td>
+        <td><span class="badge badge-success">✅ Completed</span></td>
+        <td><code>TelemetryMetricCard.tsx</code></td>
+      </tr>
+      <tr>
+        <td><strong>T1.07</strong></td>
+        <td>Week 1</td>
+        <td>Trends Chart & Timeline Scrubber</td>
+        <td>Recharts AreaChart with linear gradients, custom dark tooltips, moving average line, and interactive timeline <code>&lt;Brush&gt;</code> scrubber.</td>
+        <td><span class="badge badge-success">✅ Completed</span></td>
+        <td><code>TelemetryTrendsChart.tsx</code></td>
+      </tr>
+      <tr>
+        <td><strong>T1.08</strong></td>
+        <td>Week 1</td>
+        <td>Synchronized Multi-Sensor Views</td>
+        <td>Thermal-mechanical dual view using Recharts <code>syncId</code> and 4-machine Fleet Comparative Overlay with spread delta (Δ Max-Min).</td>
+        <td><span class="badge badge-success">✅ Completed</span></td>
+        <td><code>DualMetricsComparisonChart.tsx</code></td>
+      </tr>
+      <tr>
+        <td><strong>T1.09</strong></td>
+        <td>Week 1</td>
+        <td>Equipment Health Radar & Histogram</td>
+        <td>Recharts RadarChart across 5 normalized axes (Thermal, Vib, Press, RPM, Power) and Operational Band BarChart histogram.</td>
+        <td><span class="badge badge-success">✅ Completed</span></td>
+        <td><code>EquipmentHealthRadar.tsx</code></td>
+      </tr>
+      <tr>
+        <td><strong>T1.10</strong></td>
+        <td>Week 1</td>
+        <td>Threshold Modal & CSV Audit Export</td>
+        <td>Runtime threshold adjustment modal without page reload, plus instantaneous 30-sample telemetry export to standardized CSV.</td>
+        <td><span class="badge badge-success">✅ Completed</span></td>
+        <td><code>ThresholdConfigModal.tsx</code></td>
+      </tr>
+      <tr>
+        <td><strong>T1.11</strong></td>
+        <td>Week 1</td>
+        <td>Audio Synthesizer & Smoke Tests</td>
+        <td>Zero-dependency Web Audio API alarm synthesizer and automated test suite verifying moving averages, FIFO buffer, and thresholds.</td>
+        <td><span class="badge badge-success">✅ Completed</span></td>
+        <td><code>npm run test:telemetry</code> (12/12 PASS)</td>
+      </tr>
+
+      <!-- WEEK 2 -->
+      <tr>
+        <td><strong>T2.01</strong></td>
+        <td>Week 2</td>
+        <td>Express Backend & WebSocket Hub</td>
+        <td>Built Node.js/Express backend service running on port 4000 with RFC 6455 WebSocket gateway on <code>/ws/telemetry</code>.</td>
+        <td><span class="badge badge-success">✅ Completed</span></td>
+        <td><code>server/src/server.ts</code></td>
+      </tr>
+      <tr>
+        <td><strong>T2.02</strong></td>
+        <td>Week 2</td>
+        <td>WebSocket Protocol Specification</td>
+        <td>Authored formal protocol document defining 8 bi-directional message schemas (data, subscribe, unsubscribe, alert, ping/pong).</td>
+        <td><span class="badge badge-success">✅ Completed</span></td>
+        <td><code>websocket-protocol-spec.md</code></td>
+      </tr>
+      <tr>
+        <td><strong>T2.03</strong></td>
+        <td>Week 2</td>
+        <td>REST Ingestion & History Endpoints</td>
+        <td>Engineered <code>POST /api/telemetry/ingest</code> with payload validation, <code>GET /api/telemetry/history</code>, and <code>GET /api/machines</code>.</td>
+        <td><span class="badge badge-success">✅ Completed</span></td>
+        <td><code>telemetryRoutes.ts</code></td>
+      </tr>
+      <tr>
+        <td><strong>T2.04</strong></td>
+        <td>Week 2</td>
+        <td>1Hz Telemetry Broadcaster</td>
+        <td>Background service broadcasting continuous 1Hz telemetry frames to connected clients with rolling moving average calculations.</td>
+        <td><span class="badge badge-success">✅ Completed</span></td>
+        <td><code>telemetrySimulator.ts</code></td>
+      </tr>
+      <tr>
+        <td><strong>T2.05</strong></td>
+        <td>Week 2</td>
+        <td>Frontend WebSocket Client & Hook</td>
+        <td>Singleton connection manager with exponential backoff (1s-10s) and custom <code>useWebSocketTelemetry</code> React hook with RTT ping/pong.</td>
+        <td><span class="badge badge-success">✅ Completed</span></td>
+        <td><code>websocketClient.ts</code></td>
+      </tr>
+      <tr>
+        <td><strong>T2.06</strong></td>
+        <td>Week 2</td>
+        <td>Static Baseline Calibration Tool</td>
+        <td>Calibration inspector allowing operators to freeze streaming charts and measure live sensor tolerance deltas (Δ) against ISO standards.</td>
+        <td><span class="badge badge-success">✅ Completed</span></td>
+        <td><code>StaticBaselineInspector.tsx</code></td>
+      </tr>
+      <tr>
+        <td><strong>T2.07</strong></td>
+        <td>Week 2</td>
+        <td>5,000 writes/sec Stress Audit</td>
+        <td>Conducted load test simulating 10,000 frames in 500-sample batches; achieved <strong>146,842 writes/sec</strong>, far exceeding review targets.</td>
+        <td><span class="badge badge-success">✅ Completed</span></td>
+        <td><code>ingestion-benchmark.js</code></td>
+      </tr>
+
+      <!-- WEEK 3 -->
+      <tr>
+        <td><strong>T3.01</strong></td>
+        <td>Week 3</td>
+        <td>Visual Node Editor (React Flow)</td>
+        <td>Integrate React Flow canvas with custom nodes: Data Source (machine, metric), Math Processor (moving average), and Action Trigger.</td>
+        <td><span class="badge badge-pending">⏳ Scheduled</span></td>
+        <td><code>client/src/components/canvas/</code></td>
+      </tr>
+      <tr>
+        <td><strong>T3.02</strong></td>
+        <td>Week 3</td>
+        <td>Workflow Graph Serialization</td>
+        <td>Serialize drag-and-drop node graph into a structured JSON configuration format with connection edge validation.</td>
+        <td><span class="badge badge-pending">⏳ Scheduled</span></td>
+        <td><code>POST /api/workflows</code></td>
+      </tr>
+      <tr>
+        <td><strong>T3.03</strong></td>
+        <td>Week 3</td>
+        <td>RxJS Stream Pipeline Compiler</td>
+        <td>Backend compiler that reads workflow JSON and dynamically constructs RxJS Observable pipelines (<code>bufferCount</code>, <code>filter</code>, <code>map</code>).</td>
+        <td><span class="badge badge-pending">⏳ Scheduled</span></td>
+        <td><code>server/src/compiler/</code></td>
+      </tr>
+      <tr>
+        <td><strong>T3.04</strong></td>
+        <td>Week 3</td>
+        <td>Live Rule Execution on Influx</td>
+        <td>Connect incoming WebSocket telemetry stream directly into compiled RxJS pipelines to evaluate threshold conditions in real time.</td>
+        <td><span class="badge badge-pending">⏳ Scheduled</span></td>
+        <td><code>ruleEngineService.ts</code></td>
+      </tr>
+      <tr>
+        <td><strong>T3.05</strong></td>
+        <td>Week 3</td>
+        <td>Live Rule Alerts on Dashboard</td>
+        <td>Subscribe frontend dashboard to <code>rule:alert</code> WebSocket events to display instant rule trigger cards with audio beacon alerts.</td>
+        <td><span class="badge badge-pending">⏳ Scheduled</span></td>
+        <td>Dashboard Alert Panel</td>
+      </tr>
+      <tr>
+        <td><strong>T3.06</strong></td>
+        <td>Week 3</td>
+        <td>Canvas Data Flow Animation</td>
+        <td>Add visual animated glowing edges and node pulse effects on the React Flow canvas when active telemetry passes through nodes.</td>
+        <td><span class="badge badge-pending">⏳ Scheduled</span></td>
+        <td>Visual Canvas Feedback</td>
+      </tr>
+
+      <!-- WEEK 4 -->
+      <tr>
+        <td><strong>T4.01</strong></td>
+        <td>Week 4</td>
+        <td>Outbound Webhook Dispatcher</td>
+        <td>Build asynchronous HTTP POST dispatcher that sends structured JSON alert payloads to user-configured external webhook endpoints.</td>
+        <td><span class="badge badge-pending">⏳ Scheduled</span></td>
+        <td><code>webhookService.ts</code></td>
+      </tr>
+      <tr>
+        <td><strong>T4.02</strong></td>
+        <td>Week 4</td>
+        <td>Mock SMS Alert Provider</td>
+        <td>Implement simulated SMS dispatch gateway logging formatted SMS text notifications (Twilio payload standard) for urgent alerts.</td>
+        <td><span class="badge badge-pending">⏳ Scheduled</span></td>
+        <td><code>smsService.ts</code></td>
+      </tr>
+      <tr>
+        <td><strong>T4.03</strong></td>
+        <td>Week 4</td>
+        <td>MongoDB Production Time-Series</td>
+        <td>Connect live ingestion pipeline to physical MongoDB 5.0+ Time Series collection (<code>timeseries: { timeField: "timestamp" }</code>).</td>
+        <td><span class="badge badge-pending">⏳ Scheduled</span></td>
+        <td><code>mongoClient.ts</code></td>
+      </tr>
+      <tr>
+        <td><strong>T4.04</strong></td>
+        <td>Week 4</td>
+        <td>End-to-End System Audit</td>
+        <td>Perform integration validation across the entire data lifecycle: Sensors → Ingest API → RxJS Pipeline → MongoDB → WebSocket → Dashboard → Alerts.</td>
+        <td><span class="badge badge-pending">⏳ Scheduled</span></td>
+        <td>End-to-End Audit Suite</td>
+      </tr>
+      <tr>
+        <td><strong>T4.05</strong></td>
+        <td>Week 4</td>
+        <td>UI/UX Usability Polish</td>
+        <td>Add empty state graphics, error toast notifications, connection status banners, and keyboard accessibility.</td>
+        <td><span class="badge badge-pending">⏳ Scheduled</span></td>
+        <td>Frontend Polish</td>
+      </tr>
+      <tr>
+        <td><strong>T4.06</strong></td>
+        <td>Week 4</td>
+        <td>Final Project Demo & Packaging</td>
+        <td>Produce project demonstration video, sample workflow templates, final documentation, and presentation slide deck.</td>
+        <td><span class="badge badge-pending">⏳ Scheduled</span></td>
+        <td>Final Deliverables</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>✅ 3. Detailed Summary of Completed Work (Weeks 1 & 2)</h2>
+  <h3>Frontend SCADA Monitoring Dashboard</h3>
+  <ul>
+    <li>Built responsive dark industrial SCADA dashboard with React 18, Vite, TypeScript, and Tailwind CSS.</li>
+    <li>Integrated 4 telemetry metric cards with threshold badges and SVG sparkline trend previews.</li>
+    <li>Implemented Recharts multi-metric area chart with linear gradients, moving average overlays, and timeline <code>&lt;Brush&gt;</code> zoom scrubber.</li>
+    <li>Constructed dual synchronized crosshair view (<code>syncId</code>) and 4-machine Fleet Comparative Overlay with spread delta calculation.</li>
+    <li>Built statistical Operational Band Histogram and 5-axis Equipment Health Radar.</li>
+    <li>Developed dynamic threshold modal, CSV telemetry export, and Web Audio API alarm synthesizer.</li>
+  </ul>
+
+  <h3>Backend Ingestion & WebSocket Streaming Service</h3>
+  <ul>
+    <li>Engineered Node.js + Express backend service on port 4000 with RFC 6455 WebSocket gateway on <code>ws://localhost:4000/ws/telemetry</code>.</li>
+    <li>Authored formal WebSocket protocol specification detailing 8 bi-directional event schemas.</li>
+    <li>Built REST endpoints: Ingestion API (<code>POST /api/telemetry/ingest</code>), history endpoint, and fleet metadata.</li>
+    <li>Created continuous 1Hz telemetry broadcaster and frontend WebSocket client with exponential backoff and RTT ping/pong.</li>
+    <li>Built Static Baseline Calibration Inspector measuring tolerance deviations against ISO standards.</li>
+    <li>Executed 5k writes/sec stress audit achieving <strong>146,842 writes/sec</strong> throughput.</li>
+  </ul>
+
+  <h3>Verification & Testing</h3>
+  <ul>
+    <li>Automated smoke test suite passing <strong>12/12 assertions</strong> (moving averages, FIFO buffers, bounds, hysteresis).</li>
+    <li>17 semantic commits pushed to GitHub <code>main</code> branch with daily activity logs.</li>
+  </ul>
+
+  <h2 style="page-break-before: always;">⏳ 4. Upcoming Solo Execution Plan (Weeks 3 & 4)</h2>
+  <h3>Week 3: Visual Rule Canvas & Reactive RxJS Pipeline</h3>
+  <ul>
+    <li>Implement React Flow visual workflow canvas with reusable drag-and-drop nodes (Data Source, Moving Average, Threshold Check, Action Alert).</li>
+    <li>Serialize node graph into validated JSON configuration schema.</li>
+    <li>Build backend RxJS stream compiler converting JSON nodes into executable reactive stream pipelines.</li>
+    <li>Pipe live incoming WebSocket telemetry into compiled pipelines and evaluate rules in real time.</li>
+    <li>Display live rule alerts dynamically on the SCADA dashboard with animated pulsing flow feedback on canvas nodes.</li>
+  </ul>
+
+  <h3>Week 4: Outbound Integrations, Production Database & Final Review</h3>
+  <ul>
+    <li>Develop outbound HTTP webhook dispatcher delivering alert payloads to external endpoints.</li>
+    <li>Implement simulated SMS dispatch service for critical industrial alert text notifications.</li>
+    <li>Integrate physical MongoDB 5.0+ Time Series collections for production persistence.</li>
+    <li>Execute end-to-end audit: Sensor Simulator → Ingestion API → RxJS Pipeline → MongoDB → WebSocket → Dashboard & Outbound Alerts.</li>
+    <li>Deliver final project documentation, sample workflow exports, video demonstration, and presentation slides.</li>
+  </ul>
+
+  <h2>💻 5. Local Execution Commands</h2>
+  <pre style="background:#f1f5f9; padding:8px 12px; border-radius:4px; font-family:Consolas,monospace; font-size:11px; color:#0369a1; border:1px solid #cbd5e1;">
+# Terminal 1: Backend WebSocket & REST Service (Port 4000)
+cd server
+npm start
+
+# Terminal 2: Frontend SCADA Dashboard (Port 5173)
+cd client
+npm run dev
+
+# Run Automated Test Suite (12 Assertions)
+cd client
+npm run test:telemetry
+
+# Run Ingestion Stress Benchmark (5k writes/sec target)
+cd server
+node scripts/ingestion-benchmark.js
+  </pre>
+
+</body>
+</html>
