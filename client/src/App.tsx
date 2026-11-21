@@ -12,6 +12,8 @@ import { ThresholdConfigModal } from './components/dashboard/ThresholdConfigModa
 import { WsNetworkDiagnosticsModal } from './components/dashboard/WsNetworkDiagnosticsModal';
 import { StaticBaselineInspector } from './components/dashboard/StaticBaselineInspector';
 import { EquipmentHealthRadar } from './components/dashboard/EquipmentHealthRadar';
+import { FleetComparativeOverlayChart } from './components/dashboard/FleetComparativeOverlayChart';
+import { MetricDistributionHistogram } from './components/dashboard/MetricDistributionHistogram';
 import { useWebSocketTelemetry } from './hooks/useWebSocketTelemetry';
 import { audioAlert } from './utils/audioAlert';
 import {
@@ -42,7 +44,7 @@ export const App: React.FC = () => {
   const [isStreaming, setIsStreaming] = useState<boolean>(true);
   const [streamSpeed, setStreamSpeed] = useState<number>(1);
   const [audioEnabled, setAudioEnabled] = useState<boolean>(false);
-  const [viewMode, setViewMode] = useState<'single' | 'dual'>('single');
+  const [viewMode, setViewMode] = useState<'single' | 'dual' | 'fleet'>('single');
   const [highlightAnomalies, setHighlightAnomalies] = useState<boolean>(true);
 
   // Custom thresholds map (allows real-time adjustment per metric)
@@ -357,18 +359,26 @@ export const App: React.FC = () => {
           onExportCsv={handleExportCsv}
           feedMode={feedMode}
         />
-      ) : (
+      ) : viewMode === 'dual' ? (
         <DualMetricsComparisonChart
           data={currentChartData}
           machineId={selectedMachineId}
           tempThresholds={thresholdOverrides.temperature}
           vibThresholds={thresholdOverrides.vibration}
         />
+      ) : (
+        <FleetComparativeOverlayChart
+          telemetryStore={telemetryStore}
+          machines={machines}
+          selectedMetric={selectedMetric}
+          onSelectMetric={setSelectedMetric}
+          thresholds={thresholdOverrides[selectedMetric]}
+        />
       )}
 
-      {/* Calibration & Equilibrium Section */}
+      {/* Calibration, Distribution & Equilibrium Section */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-12 xl:col-span-8">
+        <div className="lg:col-span-12 xl:col-span-6">
           <StaticBaselineInspector
             currentValue={latestPoint ? (latestPoint[selectedMetric] as number) : selectedMachine.metrics[selectedMetric]}
             metric={selectedMetric}
@@ -377,7 +387,15 @@ export const App: React.FC = () => {
             onToggleStaticMode={() => setFeedMode(feedMode === 'static_baseline' ? 'live_websocket' : 'static_baseline')}
           />
         </div>
-        <div className="lg:col-span-12 xl:col-span-4">
+        <div className="lg:col-span-12 xl:col-span-3">
+          <MetricDistributionHistogram
+            data={currentChartData}
+            selectedMetric={selectedMetric}
+            machineId={selectedMachineId}
+            thresholds={thresholdOverrides[selectedMetric]}
+          />
+        </div>
+        <div className="lg:col-span-12 xl:col-span-3">
           <EquipmentHealthRadar machine={selectedMachine} />
         </div>
       </div>

@@ -4,11 +4,10 @@ import {
   Pause,
   Volume2,
   VolumeX,
-  Gauge,
   Columns,
   Square,
+  Layers,
   AlertCircle,
-  FastForward,
 } from 'lucide-react';
 
 interface StreamPlaybackControlsProps {
@@ -18,8 +17,8 @@ interface StreamPlaybackControlsProps {
   onChangeSpeed: (speed: number) => void;
   audioEnabled: boolean;
   onToggleAudio: () => void;
-  viewMode: 'single' | 'dual';
-  onChangeViewMode: (mode: 'single' | 'dual') => void;
+  viewMode: 'single' | 'dual' | 'fleet';
+  onChangeViewMode: (mode: 'single' | 'dual' | 'fleet') => void;
   highlightAnomalies: boolean;
   onToggleHighlightAnomalies: () => void;
 }
@@ -79,7 +78,7 @@ export const StreamPlaybackControls: React.FC<StreamPlaybackControlsProps> = ({
         </div>
       </div>
 
-      {/* Center: View Mode (Single Focus vs Dual Synchronized) */}
+      {/* Center: View Mode (Single Focus vs Dual Synchronized vs Fleet Comparative) */}
       <div className="flex items-center space-x-2">
         <span className="text-slate-400 text-[11px] uppercase mr-1 hidden sm:inline">
           Recharts Layout:
@@ -92,6 +91,7 @@ export const StreamPlaybackControls: React.FC<StreamPlaybackControlsProps> = ({
                 ? 'bg-industrial-800 text-white font-semibold'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
+            title="Single-metric area chart with timeline scrubber"
           >
             <Square className="w-3 h-3" />
             <span>Focus</span>
@@ -103,9 +103,22 @@ export const StreamPlaybackControls: React.FC<StreamPlaybackControlsProps> = ({
                 ? 'bg-industrial-800 text-cyan-300 font-semibold'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
+            title="Dual synchronized thermal-mechanical charts"
           >
             <Columns className="w-3 h-3" />
             <span>Dual Sync</span>
+          </button>
+          <button
+            onClick={() => onChangeViewMode('fleet')}
+            className={`flex items-center space-x-1 px-2.5 py-1 rounded transition-all ${
+              viewMode === 'fleet'
+                ? 'bg-industrial-800 text-amber-300 font-semibold'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+            title="Fleet multi-unit comparative overlay"
+          >
+            <Layers className="w-3 h-3" />
+            <span>Fleet</span>
           </button>
         </div>
       </div>
