@@ -75,12 +75,50 @@ export const App: React.FC = () => {
     setToastMessage(`New Alert: ${newAlert.ruleName} on ${newAlert.machineName}`);
   }, []);
 
+  const handleTelemetryFromWebSocket = useCallback(
+    (point: TelemetryDataPoint) => {
+      setTelemetryStore((prevStore) => {
+        const currentList = prevStore[point.machineId] || [];
+        return {
+          ...prevStore,
+          [point.machineId]: [...currentList.slice(-29), point],
+        };
+      });
+
+      setMachines((prevMachines) =>
+        prevMachines.map((m) => {
+          if (m.id !== point.machineId) return m;
+          const tempCrit = thresholdOverrides.temperature?.critical ?? 85.0;
+          const tempWarn = thresholdOverrides.temperature?.warning ?? 80.0;
+          return {
+            ...m,
+            metrics: {
+              temperature: point.temperature,
+              vibration: point.vibration,
+              pressure: point.pressure,
+              rpm: point.rpm,
+              power: point.power,
+            },
+            status:
+              point.temperature > tempCrit
+                ? 'critical'
+                : point.temperature > tempWarn
+                ? 'warning'
+                : 'operational',
+          };
+        })
+      );
+    },
+    [thresholdOverrides]
+  );
+
   // WebSocket Telemetry Hook integration (Week 2)
   const { networkStats, reconnect } = useWebSocketTelemetry({
     machineId: selectedMachineId,
     initialData: telemetryStore[selectedMachineId],
     feedMode,
     onAlertReceived: handleAlertFromWebSocket,
+    onTelemetryReceived: handleTelemetryFromWebSocket,
   });
 
   const selectedMachine = machines.find((m) => m.id === selectedMachineId) || machines[0];
@@ -109,9 +147,9 @@ export const App: React.FC = () => {
     audioAlert.setEnabled(audioEnabled);
   }, [audioEnabled]);
 
-  // Live telemetry stream simulator (updates only when in live_websocket mode and isStreaming is true)
+  // Live telemetry stream simulator (runs as fallback when offline or in standalone simulation)
   useEffect(() => {
-    if (!isStreaming || feedMode === 'static_baseline') return;
+    if (!isStreaming || feedMode === 'static_baseline' || networkStats.status === 'connected') return;
 
     const tickIntervalMs = Math.round(2500 / streamSpeed);
 
@@ -213,7 +251,7 @@ export const App: React.FC = () => {
     }, tickIntervalMs);
 
     return () => clearInterval(interval);
-  }, [telemetryStore, machines, thresholdOverrides, isStreaming, streamSpeed, selectedMachineId, feedMode]);
+  }, [telemetryStore, machines, thresholdOverrides, isStreaming, streamSpeed, selectedMachineId, feedMode, networkStats.status]);
 
   const handleAcknowledgeAlert = (id: string) => {
     setAlerts((prev) =>

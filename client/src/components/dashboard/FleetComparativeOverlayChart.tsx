@@ -29,6 +29,10 @@ interface FleetComparativeOverlayChartProps {
 
 const MACHINE_COLORS: Record<string, { stroke: string; dot: string; label: string }> = {
   'T-101': { stroke: '#06b6d4', dot: '#22d3ee', label: 'T-101 Turbine' },
+  'C-204': { stroke: '#10b981', dot: '#34d399', label: 'C-204 Compressor' },
+  'H-302': { stroke: '#f59e0b', dot: '#fbbf24', label: 'H-302 Hydraulic' },
+  'G-501': { stroke: '#a855f7', dot: '#c084fc', label: 'G-501 Generator' },
+  // Backward compatibility aliases
   'C-202': { stroke: '#10b981', dot: '#34d399', label: 'C-202 Compressor' },
   'P-303': { stroke: '#f59e0b', dot: '#fbbf24', label: 'P-303 Pump' },
   'G-404': { stroke: '#a855f7', dot: '#c084fc', label: 'G-404 Generator' },
@@ -44,16 +48,20 @@ export const FleetComparativeOverlayChart: React.FC<FleetComparativeOverlayChart
   const metricDef = METRIC_DEFINITIONS[selectedMetric];
   const activeThresholds = thresholds || metricDef.thresholds;
 
-  // Machine visibility toggles
-  const [visibleMachines, setVisibleMachines] = useState<Record<string, boolean>>({
-    'T-101': true,
-    'C-202': true,
-    'P-303': true,
-    'G-404': true,
+  // Machine visibility toggles (defaults all fleet machines to active)
+  const [visibleMachines, setVisibleMachines] = useState<Record<string, boolean>>(() => {
+    const init: Record<string, boolean> = {};
+    machines.forEach((m) => {
+      init[m.id] = true;
+    });
+    return init;
   });
 
   const toggleMachine = (id: string) => {
-    setVisibleMachines((prev) => ({ ...prev, [id]: !prev[id] }));
+    setVisibleMachines((prev) => ({
+      ...prev,
+      [id]: prev[id] === false ? true : false,
+    }));
   };
 
   // Merge the streams across all machines by array index
@@ -324,7 +332,7 @@ export const FleetComparativeOverlayChart: React.FC<FleetComparativeOverlayChart
 
             {/* Machine Line Traces */}
             {machines.map((m) => {
-              if (!visibleMachines[m.id]) return null;
+              if (visibleMachines[m.id] === false) return null;
               const cfg = MACHINE_COLORS[m.id] || { stroke: '#94a3b8' };
               return (
                 <Line

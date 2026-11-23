@@ -30,7 +30,19 @@ export const MetricDistributionHistogram: React.FC<MetricDistributionHistogramPr
   const activeThresholds = thresholds || metricDef.thresholds;
 
   const distribution = useMemo(() => {
-    if (!data || data.length === 0) return { bins: [], mean: 0, stdDev: 0, count: 0 };
+    if (!data || data.length === 0) {
+      return {
+        bins: [
+          { band: 'Optimal Safe', range: 'N/A', count: 0, percentage: 0, color: '#10b981' },
+          { band: 'High Nominal', range: 'N/A', count: 0, percentage: 0, color: '#06b6d4' },
+          { band: 'Warning State', range: 'N/A', count: 0, percentage: 0, color: '#f59e0b' },
+          { band: 'Critical Excursion', range: 'N/A', count: 0, percentage: 0, color: '#f43f5e' },
+        ],
+        mean: 0,
+        stdDev: 0,
+        count: 0,
+      };
+    }
 
     const values = data.map((d) => d[selectedMetric] as number);
     const count = values.length;

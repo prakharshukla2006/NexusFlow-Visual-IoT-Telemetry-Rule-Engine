@@ -28,9 +28,12 @@
 - Built the interactive WebSocket Network Diagnostics Modal displaying gateway connection status, live round-trip latency (RTT), frames ingested counter, client session ID, and an on-demand REST sensor ingestion test dispatcher.
 
 ### 2. Fixes & Engineering Challenges Solved
-- Implemented client heartbeat pong listeners to automatically recover from dropped TCP connections and detect dead sockets without waiting for browser timeout.
-- Engineered graceful fallback handling: if the backend server is temporarily offline, the frontend seamlessly transitions to local static baseline simulation without crashing or interrupting dashboard analytics.
-- Prevented React virtual DOM thrashing by decoupling high-frequency WebSocket socket message events from non-essential layout re-renders.
+- Integrated bi-directional WebSocket telemetry frame propagation (`onTelemetryReceived`) from the `useWebSocketTelemetry` client hook into parent state, directly streaming live sensor readings to dashboard cards and charts.
+- Resolved race condition between live WebSocket feed and local fallback simulation: local interval pauses when live WebSocket is connected, preventing competing duplicate ticks while preserving instant offline fallback.
+- Harmonized fleet machine ID identifiers (`T-101`, `C-204`, `H-302`, `G-501`) across `FleetComparativeOverlayChart`, fixing grey trace color fallbacks and enabling dynamic machine visibility initialization.
+- Synchronized static baseline profile selector state upon metric change in `StaticBaselineInspector` to prevent stale profile ID selection across metric switches.
+- Guarded `EquipmentHealthRadar` and `MetricDistributionHistogram` against nullish metric data or uninitialized buffer edge cases to eliminate potential UI rendering exceptions.
+- Hardened Web Audio API context resume logic by handling asynchronous `resume()` promises safely against browser autoplay policy restrictions.
 - Verified batch memory allocation during ingestion stress tests (+0.30 MB heap delta over 10,000 frames) ensuring zero memory leaks during extended monitoring runs.
 
 ### 3. Blockers
@@ -51,4 +54,5 @@
 | **2** | `8f1438d` | `feat(server): implement telemetry ingestion API, static history endpoints, and event broadcaster` | REST endpoints (`/api/telemetry/ingest`, `/api/telemetry/history`), live broadcaster |
 | **3** | `cbf98b8` | `feat(client): integrate WebSocket client hook with connection state, ping monitoring, and stream buffering` | `websocketClient.ts`, `useWebSocketTelemetry.ts` React hook, latency RTT |
 | **4** | `eccb1cf` | `feat(dashboard): connect static dashboard charts, live/static mode switcher, and Week 2 progress docs` | Static charts mode, WS diagnostics modal, protocol docs, and Week 2 report |
-| **5** | *(Today)* | `feat(dashboard): add static baseline calibration inspector and 5k writes/sec ingestion benchmark` | Calibration delta inspector, 5k writes/sec benchmark runner (`ingestion-benchmark.js`), and test suite |
+| **5** | `e9e58a7` | `feat(dashboard): add static baseline calibration inspector and 5k writes/sec ingestion benchmark` | Calibration delta inspector, 5k writes/sec benchmark runner (`ingestion-benchmark.js`), and test suite |
+| **6** | *(Today)* | `fix(week-2): resolve live WebSocket stream propagation, fleet trace colors, baseline profile sync, and audio context handling` | Fixed live WS state bridge, dual-feed arbitration, fleet machine IDs, and audio resume |

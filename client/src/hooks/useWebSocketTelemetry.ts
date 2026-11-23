@@ -12,6 +12,7 @@ interface UseWebSocketTelemetryOptions {
   initialData?: TelemetryDataPoint[];
   feedMode?: TelemetryFeedMode;
   onAlertReceived?: (alert: RuleAlertEvent) => void;
+  onTelemetryReceived?: (point: TelemetryDataPoint) => void;
 }
 
 export function useWebSocketTelemetry({
@@ -19,6 +20,7 @@ export function useWebSocketTelemetry({
   initialData = [],
   feedMode = 'live_websocket',
   onAlertReceived,
+  onTelemetryReceived,
 }: UseWebSocketTelemetryOptions) {
   const [networkStats, setNetworkStats] = useState<WsNetworkStats>(wsClient.getNetworkStats());
   const [liveStreamData, setLiveStreamData] = useState<TelemetryDataPoint[]>(initialData);
@@ -39,24 +41,27 @@ export function useWebSocketTelemetry({
 
     // Listen to incoming telemetry frames
     const unsubData = wsClient.on('telemetry:data', (frame: any) => {
+      const nextPoint: TelemetryDataPoint = {
+        timestamp: frame.timestamp,
+        timeFormatted: frame.timeFormatted,
+        machineId: frame.machineId,
+        temperature: frame.temperature,
+        vibration: frame.vibration,
+        pressure: frame.pressure,
+        rpm: frame.rpm,
+        power: frame.power,
+        temperatureAvg: frame.temperatureAvg,
+        vibrationAvg: frame.vibrationAvg,
+        isAnomaly: frame.isAnomaly,
+      };
+
+      // Notify parent store
+      if (onTelemetryReceived) {
+        onTelemetryReceived(nextPoint);
+      }
+
       if (frame.machineId === machineId) {
-        setLiveStreamData((prev) => {
-          const nextPoint: TelemetryDataPoint = {
-            timestamp: frame.timestamp,
-            timeFormatted: frame.timeFormatted,
-            machineId: frame.machineId,
-            temperature: frame.temperature,
-            vibration: frame.vibration,
-            pressure: frame.pressure,
-            rpm: frame.rpm,
-            power: frame.power,
-            temperatureAvg: frame.temperatureAvg,
-            vibrationAvg: frame.vibrationAvg,
-            isAnomaly: frame.isAnomaly,
-          };
-          // Maintain 30-sample sliding window
-          return [...prev.slice(-29), nextPoint];
-        });
+        setLiveStreamData((prev) => [...prev.slice(-29), nextPoint]);
       }
     });
 
@@ -73,7 +78,7 @@ export function useWebSocketTelemetry({
       unsubAlert();
       wsClient.unsubscribe(machineId);
     };
-  }, [machineId, onAlertReceived]);
+  }, [machineId, onAlertReceived, onTelemetryReceived]);
 
   const reconnect = useCallback(() => {
     wsClient.connect();

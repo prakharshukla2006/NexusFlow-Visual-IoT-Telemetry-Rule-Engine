@@ -31,7 +31,7 @@ class AudioAlertService {
       if (!this.audioCtx) return;
 
       if (this.audioCtx.state === 'suspended') {
-        this.audioCtx.resume();
+        this.audioCtx.resume().catch(() => {});
       }
 
       const osc = this.audioCtx.createOscillator();

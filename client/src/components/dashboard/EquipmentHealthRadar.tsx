@@ -16,20 +16,22 @@ interface EquipmentHealthRadarProps {
 }
 
 export const EquipmentHealthRadar: React.FC<EquipmentHealthRadarProps> = ({ machine }) => {
+  const metrics = machine?.metrics || { temperature: 80, vibration: 1.5, pressure: 120, rpm: 3000, power: 400 };
+
   // Normalize live metrics into a 0-100% balance polygon
   // Safe / ideal values are closer to 100%, stressed values drop towards 0%
-  const tempHealth = Math.max(10, Math.min(100, Math.round(100 - ((machine.metrics.temperature - 50) / 40) * 80)));
-  const vibHealth = Math.max(10, Math.min(100, Math.round(100 - (machine.metrics.vibration / 4.8) * 80)));
-  const pressHealth = Math.max(10, Math.min(100, Math.round(95 - Math.abs(machine.metrics.pressure - 125) * 1.2)));
-  const rpmHealth = Math.max(10, Math.min(100, Math.round(100 - Math.abs(machine.metrics.rpm - 3000) * 0.05)));
-  const powerHealth = Math.max(10, Math.min(100, Math.round((machine.metrics.power / 500) * 100)));
+  const tempHealth = Math.max(10, Math.min(100, Math.round(100 - (((metrics.temperature ?? 80) - 50) / 40) * 80)));
+  const vibHealth = Math.max(10, Math.min(100, Math.round(100 - ((metrics.vibration ?? 1.5) / 4.8) * 80)));
+  const pressHealth = Math.max(10, Math.min(100, Math.round(95 - Math.abs((metrics.pressure ?? 125) - 125) * 1.2)));
+  const rpmHealth = Math.max(10, Math.min(100, Math.round(100 - Math.abs((metrics.rpm ?? 3000) - 3000) * 0.05)));
+  const powerHealth = Math.max(10, Math.min(100, Math.round(((metrics.power ?? 400) / 500) * 100)));
 
   const radarData = [
-    { subject: 'Thermal State', score: tempHealth, fullMark: 100, raw: `${machine.metrics.temperature.toFixed(1)}°C` },
-    { subject: 'Vib Stability', score: vibHealth, fullMark: 100, raw: `${machine.metrics.vibration.toFixed(2)} mm/s` },
-    { subject: 'Fluid Pressure', score: pressHealth, fullMark: 100, raw: `${machine.metrics.pressure.toFixed(1)} bar` },
-    { subject: 'Rotor Kinematics', score: rpmHealth, fullMark: 100, raw: `${machine.metrics.rpm} RPM` },
-    { subject: 'Power Output', score: powerHealth, fullMark: 100, raw: `${machine.metrics.power.toFixed(1)} kW` },
+    { subject: 'Thermal State', score: tempHealth, fullMark: 100, raw: `${(metrics.temperature ?? 0).toFixed(1)}°C` },
+    { subject: 'Vib Stability', score: vibHealth, fullMark: 100, raw: `${(metrics.vibration ?? 0).toFixed(2)} mm/s` },
+    { subject: 'Fluid Pressure', score: pressHealth, fullMark: 100, raw: `${(metrics.pressure ?? 0).toFixed(1)} bar` },
+    { subject: 'Rotor Kinematics', score: rpmHealth, fullMark: 100, raw: `${metrics.rpm ?? 0} RPM` },
+    { subject: 'Power Output', score: powerHealth, fullMark: 100, raw: `${(metrics.power ?? 0).toFixed(1)} kW` },
   ];
 
   const overallBalance = Math.round(

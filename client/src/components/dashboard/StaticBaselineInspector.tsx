@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   FileSpreadsheet,
   CheckCircle2,
@@ -62,6 +62,12 @@ export const StaticBaselineInspector: React.FC<StaticBaselineInspectorProps> = (
 
   const profiles = baselineProfiles[metric] || baselineProfiles.temperature;
   const [selectedProfileId, setSelectedProfileId] = useState<string>(profiles[0].id);
+
+  // Sync selected profile whenever the active metric changes
+  useEffect(() => {
+    setSelectedProfileId(profiles[0].id);
+  }, [metric]);
+
   const activeProfile = profiles.find((p) => p.id === selectedProfileId) || profiles[0];
 
   // Calculate live delta from static baseline
