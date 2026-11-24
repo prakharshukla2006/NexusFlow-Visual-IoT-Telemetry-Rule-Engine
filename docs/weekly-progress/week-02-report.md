@@ -26,6 +26,9 @@
 - Built the Static Baseline Calibration & Reference Delta Inspector (`StaticBaselineInspector.tsx`), allowing operators to compare real-time turbine readings against ISO-standard golden run curves and compute tolerance deviations (Δ).
 - Conducted the Mid-Project Ingestion Audit Benchmark (`server/scripts/ingestion-benchmark.js`): simulated 10,000 telemetry sensor frames in 500-sample chunks, demonstrating a measured throughput of 146,000+ writes/sec, successfully exceeding the 5,000 writes/sec mid-project review target.
 - Built the interactive WebSocket Network Diagnostics Modal displaying gateway connection status, live round-trip latency (RTT), frames ingested counter, client session ID, and an on-demand REST sensor ingestion test dispatcher.
+- Developed the Mid-Project Review Workflow Graph Validator (`server/src/services/workflowValidator.ts`) and specification (`docs/workflow-schema-spec.md`): validates React Flow serialized JSON graphs, enforces node type constraints, detects cyclic feedback loops via Kahn's topological sort algorithm, and compiles execution ordering.
+- Implemented Workflow REST API endpoints (`POST /api/workflows/validate`, `POST /api/workflows`, `GET /api/workflows`, `GET /api/workflows/:id`) enabling dynamic pipeline registration.
+- Created the Automated Graph Validation Test Suite (`server/scripts/validate-workflow-graph.js` / `npm run test:workflow`) with 10 passing assertions verifying linear pipelines, multi-branch forks, DAG cycle detection, and parameter bounds.
 
 ### 2. Fixes & Engineering Challenges Solved
 - Integrated bi-directional WebSocket telemetry frame propagation (`onTelemetryReceived`) from the `useWebSocketTelemetry` client hook into parent state, directly streaming live sensor readings to dashboard cards and charts.
@@ -55,4 +58,5 @@
 | **3** | `cbf98b8` | `feat(client): integrate WebSocket client hook with connection state, ping monitoring, and stream buffering` | `websocketClient.ts`, `useWebSocketTelemetry.ts` React hook, latency RTT |
 | **4** | `eccb1cf` | `feat(dashboard): connect static dashboard charts, live/static mode switcher, and Week 2 progress docs` | Static charts mode, WS diagnostics modal, protocol docs, and Week 2 report |
 | **5** | `e9e58a7` | `feat(dashboard): add static baseline calibration inspector and 5k writes/sec ingestion benchmark` | Calibration delta inspector, 5k writes/sec benchmark runner (`ingestion-benchmark.js`), and test suite |
-| **6** | *(Today)* | `fix(week-2): resolve live WebSocket stream propagation, fleet trace colors, baseline profile sync, and audio context handling` | Fixed live WS state bridge, dual-feed arbitration, fleet machine IDs, and audio resume |
+| **6** | `4fc5dc1` | `fix(week-2): resolve live WebSocket stream propagation, fleet trace colors, baseline profile sync, and audio context handling` | Fixed live WS state bridge, dual-feed arbitration, fleet machine IDs, and audio resume |
+| **7** | *(Today)* | `feat(workflow): implement React Flow JSON graph validator, DAG cycle detection, and REST workflow endpoints` | Graph validator (`workflowValidator.ts`), 10-test suite (`npm run test:workflow`), and REST endpoints |

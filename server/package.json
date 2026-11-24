@@ -8,7 +8,8 @@
     "build": "node ./node_modules/typescript/bin/tsc",
     "start": "node dist/server.js",
     "lint": "node ./node_modules/typescript/bin/tsc --noEmit",
-    "benchmark:ingestion": "node scripts/ingestion-benchmark.js"
+    "benchmark:ingestion": "node scripts/ingestion-benchmark.js",
+    "test:workflow": "node scripts/validate-workflow-graph.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

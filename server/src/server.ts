@@ -3,6 +3,7 @@ import http from 'http';
 import cors from 'cors';
 import { NexusWebSocketServer } from './websocket/wsServer.js';
 import telemetryRoutes from './routes/telemetryRoutes.js';
+import workflowRoutes from './routes/workflowRoutes.js';
 import { startTelemetryBroadcaster } from './services/telemetrySimulator.js';
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(express.json());
 
 // Mount API routes
 app.use('/api', telemetryRoutes);
+app.use('/api', workflowRoutes);
 
 // Basic health check
 app.get('/health', (req, res) => {
