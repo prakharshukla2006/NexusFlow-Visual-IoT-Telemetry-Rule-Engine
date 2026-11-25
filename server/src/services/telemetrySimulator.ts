@@ -1,5 +1,6 @@
 import { WsTelemetryFramePayload, WsRuleAlertPayload } from '../types/events.js';
 import { wsServer } from '../server.js';
+import { WorkflowExecutionRegistry } from './reactiveStreamEngine.js';
 
 interface MachineState {
   id: string;
@@ -189,6 +190,19 @@ export function startTelemetryBroadcaster() {
 
       // Broadcast frame via WebSocket Server
       wsServer.broadcastTelemetry(frame);
+
+      // Feed into active reactive stream rule pipelines
+      WorkflowExecutionRegistry.getInstance().feedTelemetry({
+        machineId: machine.id,
+        timestamp: now,
+        metrics: {
+          temperature: newTemp,
+          vibration: newVib,
+          pressure: newPress,
+          rpm: newRpm,
+          power: newPower,
+        },
+      });
 
       // Periodically trigger a rule alert if anomaly sustained
       if (isAnomaly && tickCount % 5 === 0) {

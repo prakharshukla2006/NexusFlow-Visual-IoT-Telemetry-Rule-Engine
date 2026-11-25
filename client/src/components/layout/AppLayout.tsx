@@ -4,6 +4,8 @@ import { Navbar } from './Navbar';
 
 interface AppLayoutProps {
   children: React.ReactNode;
+  currentTab?: string;
+  onSelectTab?: (tab: string) => void;
   activeAlertCount?: number;
   onOpenWsDiagnostics?: () => void;
   wsStatus?: string;
@@ -12,17 +14,21 @@ interface AppLayoutProps {
 
 export const AppLayout: React.FC<AppLayoutProps> = ({
   children,
+  currentTab,
+  onSelectTab,
   activeAlertCount = 2,
   onOpenWsDiagnostics,
   wsStatus,
   feedMode,
 }) => {
-  const [currentTab, setCurrentTab] = useState<string>('dashboard');
+  const [internalTab, setInternalTab] = useState<string>('dashboard');
+  const activeTab = currentTab ?? internalTab;
+  const handleSelectTab = onSelectTab ?? setInternalTab;
 
   return (
     <div className="flex h-screen bg-industrial-950 text-slate-100 overflow-hidden">
       {/* Left Sidebar */}
-      <Sidebar currentTab={currentTab} onSelectTab={setCurrentTab} />
+      <Sidebar currentTab={activeTab} onSelectTab={handleSelectTab} />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">

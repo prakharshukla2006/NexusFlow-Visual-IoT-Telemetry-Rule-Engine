@@ -5,6 +5,7 @@ import {
 } from '../services/telemetrySimulator.js';
 import { wsServer } from '../server.js';
 import { WsTelemetryFramePayload } from '../types/events.js';
+import { WorkflowExecutionRegistry } from '../services/reactiveStreamEngine.js';
 
 const router = Router();
 
@@ -86,6 +87,19 @@ router.post('/telemetry/ingest', (req: Request, res: Response) => {
 
   // Broadcast through WebSocket Hub
   wsServer.broadcastTelemetry(frame);
+
+  // Feed into active reactive stream pipelines
+  WorkflowExecutionRegistry.getInstance().feedTelemetry({
+    machineId,
+    timestamp: now,
+    metrics: {
+      temperature: Number(temperature),
+      vibration: Number(vibration ?? 1.5),
+      pressure: Number(pressure ?? 120),
+      rpm: Number(rpm ?? 3000),
+      power: Number(power ?? 350),
+    },
+  });
 
   res.status(201).json({
     status: 'accepted',

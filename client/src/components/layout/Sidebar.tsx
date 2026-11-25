@@ -86,23 +86,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab }) => 
         <div className="bg-industrial-850/70 border border-industrial-800 rounded-lg p-3 text-xs space-y-2.5">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-wider">
-              Project Member 4
+              Solo Full-Stack
             </span>
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-              Week 1
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-mono bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+              Week 2 Complete
             </span>
           </div>
           <p className="text-slate-300 font-medium leading-tight">
-            Real-Time Dashboard & Alert Integration
+            Visual Rule Canvas & WebSocket SCADA
           </p>
           <div className="pt-1 border-t border-industrial-800/80 text-[11px] text-slate-400 space-y-1">
             <div className="flex items-center justify-between">
-              <span>Chart Lib:</span>
-              <span className="font-mono text-cyan-300">Recharts (ADR-001)</span>
+              <span>Stream:</span>
+              <span className="font-mono text-cyan-300">WebSocket / RxJS</span>
             </div>
             <div className="flex items-center justify-between">
-              <span>Layout:</span>
-              <span className="font-mono text-emerald-400">SCADA Grid v1</span>
+              <span>Compiler:</span>
+              <span className="font-mono text-emerald-400">DAG Compliant</span>
             </div>
           </div>
         </div>
@@ -115,7 +115,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab }) => 
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             <span className="text-slate-300">Engine Online</span>
           </div>
-          <span className="text-slate-400">v1.0.0-w1</span>
+          <span className="text-slate-400">v1.2.0-w2</span>
         </div>
       </div>
     </aside>

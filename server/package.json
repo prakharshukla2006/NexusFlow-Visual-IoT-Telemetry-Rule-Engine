@@ -9,7 +9,8 @@
     "start": "node dist/server.js",
     "lint": "node ./node_modules/typescript/bin/tsc --noEmit",
     "benchmark:ingestion": "node scripts/ingestion-benchmark.js",
-    "test:workflow": "node scripts/validate-workflow-graph.js"
+    "test:workflow": "node scripts/validate-workflow-graph.js",
+    "test:stream": "node scripts/test-stream-engine.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

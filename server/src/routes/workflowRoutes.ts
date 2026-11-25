@@ -1,9 +1,15 @@
 import { Router, Request, Response } from 'express';
 import { validateWorkflowGraph, WorkflowGraph } from '../services/workflowValidator.js';
+import {
+  WorkflowExecutionRegistry,
+  compileGraphToPipeline,
+  TelemetryStreamEvent,
+} from '../services/reactiveStreamEngine.js';
 
 const router = Router();
+const engine = WorkflowExecutionRegistry.getInstance();
 
-// In-memory store for validated workflows (ready for Week 3 compilation)
+// In-memory store for validated workflows
 export const workflowRegistry: Map<string, WorkflowGraph> = new Map();
 
 // Seed initial default workflow
@@ -25,6 +31,7 @@ const defaultWorkflow: WorkflowGraph = {
 };
 
 workflowRegistry.set(defaultWorkflow.workflowId, defaultWorkflow);
+engine.registerWorkflow(defaultWorkflow);
 
 // POST /api/workflows/validate - Validate a React Flow workflow graph JSON without saving
 router.post('/workflows/validate', (req: Request, res: Response) => {
@@ -73,6 +80,33 @@ router.post('/workflows', (req: Request, res: Response) => {
   });
 });
 
+// POST /api/workflows/:id/deploy - Compile into active reactive stream execution engine
+router.post('/workflows/:id/deploy', (req: Request, res: Response) => {
+  const id = req.params.id;
+  const wf = workflowRegistry.get(id);
+
+  if (!wf) {
+    return res.status(404).json({
+      status: 'error',
+      message: `Workflow "${id}" not found`,
+    });
+  }
+
+  const deployResult = engine.registerWorkflow(wf);
+  if (!deployResult.success) {
+    return res.status(400).json({
+      status: 'error',
+      message: deployResult.error,
+    });
+  }
+
+  res.json({
+    status: 'success',
+    message: `Workflow "${wf.name}" compiled and deployed into active RxJS stream pipeline`,
+    workflowId: wf.workflowId,
+  });
+});
+
 // GET /api/workflows - List all registered workflows
 router.get('/workflows', (req: Request, res: Response) => {
   const workflows = Array.from(workflowRegistry.values()).map((w) => ({
@@ -87,6 +121,49 @@ router.get('/workflows', (req: Request, res: Response) => {
     status: 'success',
     count: workflows.length,
     data: workflows,
+  });
+});
+
+// GET /api/workflows/active/pipelines - List active streaming pipelines
+router.get('/workflows/active/pipelines', (_req: Request, res: Response) => {
+  const active = engine.getActiveWorkflows();
+  res.json({
+    status: 'success',
+    count: active.length,
+    data: active,
+  });
+});
+
+// GET /api/workflows/alerts - Get triggered alert history from reactive engine
+router.get('/workflows/alerts', (_req: Request, res: Response) => {
+  const alerts = engine.getAlerts();
+  res.json({
+    status: 'success',
+    count: alerts.length,
+    data: alerts,
+  });
+});
+
+// POST /api/workflows/simulate-tick - Test ingestion of a telemetry frame into active pipelines
+router.post('/workflows/simulate-tick', (req: Request, res: Response) => {
+  const event = req.body as TelemetryStreamEvent;
+  if (!event || !event.machineId || !event.metrics) {
+    return res.status(400).json({
+      status: 'error',
+      message: 'Invalid telemetry frame. Required: { machineId, timestamp, metrics: {} }',
+    });
+  }
+
+  const beforeCount = engine.getAlerts().length;
+  engine.feedTelemetry(event);
+  const afterAlerts = engine.getAlerts();
+  const newAlerts = afterAlerts.slice(0, Math.max(0, afterAlerts.length - beforeCount));
+
+  res.json({
+    status: 'success',
+    processed: true,
+    alertsTriggered: newAlerts.length,
+    alerts: newAlerts,
   });
 });
 
@@ -105,6 +182,25 @@ router.get('/workflows/:id', (req: Request, res: Response) => {
   res.json({
     status: 'success',
     data: wf,
+  });
+});
+
+// DELETE /api/workflows/:id - Delete a workflow
+router.delete('/workflows/:id', (req: Request, res: Response) => {
+  const id = req.params.id;
+  const existed = workflowRegistry.delete(id);
+  engine.unregisterWorkflow(id);
+
+  if (!existed) {
+    return res.status(404).json({
+      status: 'error',
+      message: `Workflow "${id}" not found`,
+    });
+  }
+
+  res.json({
+    status: 'success',
+    message: `Workflow "${id}" deleted successfully`,
   });
 });
 

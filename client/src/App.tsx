@@ -14,6 +14,10 @@ import { StaticBaselineInspector } from './components/dashboard/StaticBaselineIn
 import { EquipmentHealthRadar } from './components/dashboard/EquipmentHealthRadar';
 import { FleetComparativeOverlayChart } from './components/dashboard/FleetComparativeOverlayChart';
 import { MetricDistributionHistogram } from './components/dashboard/MetricDistributionHistogram';
+import { VisualWorkflowCanvas } from './components/canvas/VisualWorkflowCanvas';
+import { AlertRulesManager } from './components/alerts/AlertRulesManager';
+import { IngestionBenchmarkConsole } from './components/ingestion/IngestionBenchmarkConsole';
+import { AuditLogViewer } from './components/audit/AuditLogViewer';
 import { useWebSocketTelemetry } from './hooks/useWebSocketTelemetry';
 import { audioAlert } from './utils/audioAlert';
 import {
@@ -35,6 +39,9 @@ export const App: React.FC = () => {
   const [selectedMachineId, setSelectedMachineId] = useState<string>('T-101');
   const [selectedMetric, setSelectedMetric] = useState<MetricType>('temperature');
   const [alerts, setAlerts] = useState<RuleAlertEvent[]>(INITIAL_ALERTS);
+
+  // Active Navigation Tab: 'dashboard' | 'canvas' | 'ingestion' | 'alerts' | 'audit'
+  const [activeTab, setActiveTab] = useState<string>('dashboard');
 
   // Feed Mode: 'live_websocket' vs 'static_baseline' (Week 2 Milestone)
   const [feedMode, setFeedMode] = useState<TelemetryFeedMode>('live_websocket');
@@ -313,6 +320,8 @@ export const App: React.FC = () => {
 
   return (
     <AppLayout
+      currentTab={activeTab}
+      onSelectTab={setActiveTab}
       activeAlertCount={activeAlertCount}
       onOpenWsDiagnostics={() => setIsWsModalOpen(true)}
       wsStatus={networkStats.status}
@@ -326,134 +335,152 @@ export const App: React.FC = () => {
         </div>
       )}
 
-      {/* Top Device Filter Bar */}
-      <DeviceFilterBar
-        machines={machines}
-        selectedMachineId={selectedMachineId}
-        onSelectMachine={setSelectedMachineId}
-      />
-
-      {/* Selected Unit Health Banner */}
-      <SystemHealthBanner
-        selectedMachine={selectedMachine}
-        totalMachines={machines.length}
-        anomalyCount={selectedMachine.status !== 'operational' ? 1 : 0}
-      />
-
-      {/* Stream Playback & SCADA View Controls */}
-      <StreamPlaybackControls
-        isStreaming={isStreaming && feedMode === 'live_websocket'}
-        onToggleStreaming={() => setIsStreaming(!isStreaming)}
-        streamSpeed={streamSpeed}
-        onChangeSpeed={setStreamSpeed}
-        audioEnabled={audioEnabled}
-        onToggleAudio={() => setAudioEnabled(!audioEnabled)}
-        viewMode={viewMode}
-        onChangeViewMode={setViewMode}
-        highlightAnomalies={highlightAnomalies}
-        onToggleHighlightAnomalies={() => setHighlightAnomalies(!highlightAnomalies)}
-      />
-
-      {/* Primary 4 Metric Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {(['temperature', 'vibration', 'pressure', 'rpm'] as MetricType[]).map((metricKey) => {
-          const baseDef = METRIC_DEFINITIONS[metricKey];
-          const activeDef = {
-            ...baseDef,
-            thresholds: thresholdOverrides[metricKey] || baseDef.thresholds,
-          };
-          const val = latestPoint ? (latestPoint[metricKey] as number) : selectedMachine.metrics[metricKey];
-          const hist = currentChartData.map((p) => p[metricKey] as number);
-          const ma =
-            metricKey === 'temperature'
-              ? latestPoint?.temperatureAvg
-              : metricKey === 'vibration'
-              ? latestPoint?.vibrationAvg
-              : undefined;
-
-          return (
-            <TelemetryMetricCard
-              key={metricKey}
-              definition={activeDef}
-              currentValue={val}
-              movingAverage={ma}
-              historicalPoints={hist}
-              isSelected={selectedMetric === metricKey}
-              onSelect={() => setSelectedMetric(metricKey)}
-            />
-          );
-        })}
-      </div>
-
-      {/* Main Multi-Metric Time-Series Chart (Recharts) */}
-      {viewMode === 'single' ? (
-        <TelemetryTrendsChart
-          data={currentChartData}
-          selectedMetric={selectedMetric}
-          onSelectMetric={setSelectedMetric}
-          machineId={selectedMachineId}
-          overrideThresholds={thresholdOverrides[selectedMetric]}
-          onOpenThresholdConfig={() => setIsThresholdModalOpen(true)}
-          onExportCsv={handleExportCsv}
-          feedMode={feedMode}
+      {/* View Switcher based on Sidebar Navigation */}
+      {activeTab === 'canvas' ? (
+        <VisualWorkflowCanvas currentLiveMetrics={selectedMachine.metrics} />
+      ) : activeTab === 'alerts' ? (
+        <AlertRulesManager
+          alerts={alerts}
+          onAcknowledgeAlert={handleAcknowledgeAlert}
+          thresholdOverrides={thresholdOverrides}
+          onOpenThresholdModal={() => setIsThresholdModalOpen(true)}
         />
-      ) : viewMode === 'dual' ? (
-        <DualMetricsComparisonChart
-          data={currentChartData}
-          machineId={selectedMachineId}
-          tempThresholds={thresholdOverrides.temperature}
-          vibThresholds={thresholdOverrides.vibration}
-        />
+      ) : activeTab === 'ingestion' ? (
+        <IngestionBenchmarkConsole />
+      ) : activeTab === 'audit' ? (
+        <AuditLogViewer />
       ) : (
-        <FleetComparativeOverlayChart
-          telemetryStore={telemetryStore}
-          machines={machines}
-          selectedMetric={selectedMetric}
-          onSelectMetric={setSelectedMetric}
-          thresholds={thresholdOverrides[selectedMetric]}
-        />
-      )}
-
-      {/* Calibration, Distribution & Equilibrium Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-12 xl:col-span-6">
-          <StaticBaselineInspector
-            currentValue={latestPoint ? (latestPoint[selectedMetric] as number) : selectedMachine.metrics[selectedMetric]}
-            metric={selectedMetric}
-            machineId={selectedMachineId}
-            isStaticMode={feedMode === 'static_baseline'}
-            onToggleStaticMode={() => setFeedMode(feedMode === 'static_baseline' ? 'live_websocket' : 'static_baseline')}
-          />
-        </div>
-        <div className="lg:col-span-12 xl:col-span-3">
-          <MetricDistributionHistogram
-            data={currentChartData}
-            selectedMetric={selectedMetric}
-            machineId={selectedMachineId}
-            thresholds={thresholdOverrides[selectedMetric]}
-          />
-        </div>
-        <div className="lg:col-span-12 xl:col-span-3">
-          <EquipmentHealthRadar machine={selectedMachine} />
-        </div>
-      </div>
-
-      {/* Bottom Grid: Industrial Fleet Status & Real-Time Alerts */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-12 xl:col-span-7">
-          <MachineStatusGrid
+        <>
+          {/* Top Device Filter Bar */}
+          <DeviceFilterBar
             machines={machines}
             selectedMachineId={selectedMachineId}
             onSelectMachine={setSelectedMachineId}
           />
-        </div>
-        <div className="lg:col-span-12 xl:col-span-5">
-          <RecentAlertsFeed
-            alerts={alerts}
-            onAcknowledgeAlert={handleAcknowledgeAlert}
+
+          {/* Selected Unit Health Banner */}
+          <SystemHealthBanner
+            selectedMachine={selectedMachine}
+            totalMachines={machines.length}
+            anomalyCount={selectedMachine.status !== 'operational' ? 1 : 0}
           />
-        </div>
-      </div>
+
+          {/* Stream Playback & SCADA View Controls */}
+          <StreamPlaybackControls
+            isStreaming={isStreaming && feedMode === 'live_websocket'}
+            onToggleStreaming={() => setIsStreaming(!isStreaming)}
+            streamSpeed={streamSpeed}
+            onChangeSpeed={setStreamSpeed}
+            audioEnabled={audioEnabled}
+            onToggleAudio={() => setAudioEnabled(!audioEnabled)}
+            viewMode={viewMode}
+            onChangeViewMode={setViewMode}
+            highlightAnomalies={highlightAnomalies}
+            onToggleHighlightAnomalies={() => setHighlightAnomalies(!highlightAnomalies)}
+          />
+
+          {/* Primary 4 Metric Cards Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {(['temperature', 'vibration', 'pressure', 'rpm'] as MetricType[]).map((metricKey) => {
+              const baseDef = METRIC_DEFINITIONS[metricKey];
+              const activeDef = {
+                ...baseDef,
+                thresholds: thresholdOverrides[metricKey] || baseDef.thresholds,
+              };
+              const val = latestPoint ? (latestPoint[metricKey] as number) : selectedMachine.metrics[metricKey];
+              const hist = currentChartData.map((p) => p[metricKey] as number);
+              const ma =
+                metricKey === 'temperature'
+                  ? latestPoint?.temperatureAvg
+                  : metricKey === 'vibration'
+                  ? latestPoint?.vibrationAvg
+                  : undefined;
+
+              return (
+                <TelemetryMetricCard
+                  key={metricKey}
+                  definition={activeDef}
+                  currentValue={val}
+                  movingAverage={ma}
+                  historicalPoints={hist}
+                  isSelected={selectedMetric === metricKey}
+                  onSelect={() => setSelectedMetric(metricKey)}
+                />
+              );
+            })}
+          </div>
+
+          {/* Main Multi-Metric Time-Series Chart (Recharts) */}
+          {viewMode === 'single' ? (
+            <TelemetryTrendsChart
+              data={currentChartData}
+              selectedMetric={selectedMetric}
+              onSelectMetric={setSelectedMetric}
+              machineId={selectedMachineId}
+              overrideThresholds={thresholdOverrides[selectedMetric]}
+              onOpenThresholdConfig={() => setIsThresholdModalOpen(true)}
+              onExportCsv={handleExportCsv}
+              feedMode={feedMode}
+            />
+          ) : viewMode === 'dual' ? (
+            <DualMetricsComparisonChart
+              data={currentChartData}
+              machineId={selectedMachineId}
+              tempThresholds={thresholdOverrides.temperature}
+              vibThresholds={thresholdOverrides.vibration}
+            />
+          ) : (
+            <FleetComparativeOverlayChart
+              telemetryStore={telemetryStore}
+              machines={machines}
+              selectedMetric={selectedMetric}
+              onSelectMetric={setSelectedMetric}
+              thresholds={thresholdOverrides[selectedMetric]}
+            />
+          )}
+
+          {/* Calibration, Distribution & Equilibrium Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="lg:col-span-12 xl:col-span-6">
+              <StaticBaselineInspector
+                currentValue={latestPoint ? (latestPoint[selectedMetric] as number) : selectedMachine.metrics[selectedMetric]}
+                metric={selectedMetric}
+                machineId={selectedMachineId}
+                isStaticMode={feedMode === 'static_baseline'}
+                onToggleStaticMode={() => setFeedMode(feedMode === 'static_baseline' ? 'live_websocket' : 'static_baseline')}
+              />
+            </div>
+            <div className="lg:col-span-12 xl:col-span-3">
+              <MetricDistributionHistogram
+                data={currentChartData}
+                selectedMetric={selectedMetric}
+                machineId={selectedMachineId}
+                thresholds={thresholdOverrides[selectedMetric]}
+              />
+            </div>
+            <div className="lg:col-span-12 xl:col-span-3">
+              <EquipmentHealthRadar machine={selectedMachine} />
+            </div>
+          </div>
+
+          {/* Bottom Grid: Industrial Fleet Status & Real-Time Alerts */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="lg:col-span-12 xl:col-span-7">
+              <MachineStatusGrid
+                machines={machines}
+                selectedMachineId={selectedMachineId}
+                onSelectMachine={setSelectedMachineId}
+              />
+            </div>
+            <div className="lg:col-span-12 xl:col-span-5">
+              <RecentAlertsFeed
+                alerts={alerts}
+                onAcknowledgeAlert={handleAcknowledgeAlert}
+              />
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Threshold Configuration Modal */}
       <ThresholdConfigModal
