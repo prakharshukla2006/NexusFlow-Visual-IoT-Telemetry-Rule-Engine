@@ -50,7 +50,7 @@ export const App: React.FC = () => {
   // Playback & View controls
   const [isStreaming, setIsStreaming] = useState<boolean>(true);
   const [streamSpeed, setStreamSpeed] = useState<number>(1);
-  const [audioEnabled, setAudioEnabled] = useState<boolean>(false);
+  const [audioEnabled, setAudioEnabled] = useState<boolean>(true);
   const [viewMode, setViewMode] = useState<'single' | 'dual' | 'fleet'>('single');
   const [highlightAnomalies, setHighlightAnomalies] = useState<boolean>(true);
 
@@ -80,6 +80,11 @@ export const App: React.FC = () => {
   const handleAlertFromWebSocket = useCallback((newAlert: RuleAlertEvent) => {
     setAlerts((prev) => [newAlert, ...prev.slice(0, 9)]);
     setToastMessage(`New Alert: ${newAlert.ruleName} on ${newAlert.machineName}`);
+    if (newAlert.severity === 'critical') {
+      audioAlert.playCriticalAlarm();
+    } else if (newAlert.severity === 'warning') {
+      audioAlert.playWarningBeep();
+    }
   }, []);
 
   const handleTelemetryFromWebSocket = useCallback(
@@ -344,6 +349,8 @@ export const App: React.FC = () => {
           onAcknowledgeAlert={handleAcknowledgeAlert}
           thresholdOverrides={thresholdOverrides}
           onOpenThresholdModal={() => setIsThresholdModalOpen(true)}
+          audioEnabled={audioEnabled}
+          onToggleAudio={() => setAudioEnabled(!audioEnabled)}
         />
       ) : activeTab === 'ingestion' ? (
         <IngestionBenchmarkConsole />

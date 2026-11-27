@@ -20,6 +20,8 @@ interface AlertRulesManagerProps {
   onAcknowledgeAlert: (id: string) => void;
   thresholdOverrides: Record<string, SensorThresholds>;
   onOpenThresholdModal: () => void;
+  audioEnabled?: boolean;
+  onToggleAudio?: () => void;
 }
 
 export const AlertRulesManager: React.FC<AlertRulesManagerProps> = ({
@@ -27,6 +29,8 @@ export const AlertRulesManager: React.FC<AlertRulesManagerProps> = ({
   onAcknowledgeAlert,
   thresholdOverrides,
   onOpenThresholdModal,
+  audioEnabled = true,
+  onToggleAudio,
 }) => {
   const [filterSeverity, setFilterSeverity] = useState<'all' | 'critical' | 'warning'>('all');
   const [audioTesting, setAudioTesting] = useState(false);
@@ -40,10 +44,13 @@ export const AlertRulesManager: React.FC<AlertRulesManagerProps> = ({
   const warningCount = alerts.filter((a) => a.severity === 'warning' && !a.acknowledged).length;
   const ackCount = alerts.filter((a) => a.acknowledged).length;
 
-  const handleTestAudio = () => {
+  const handleTestAudio = async () => {
     setAudioTesting(true);
-    audioAlert.playCriticalAlarm();
-    setTimeout(() => setAudioTesting(false), 800);
+    await audioAlert.testAlarm();
+    if (!audioEnabled && onToggleAudio) {
+      onToggleAudio();
+    }
+    setTimeout(() => setAudioTesting(false), 900);
   };
 
   return (
@@ -68,10 +75,38 @@ export const AlertRulesManager: React.FC<AlertRulesManagerProps> = ({
         </div>
 
         <div className="flex items-center space-x-2">
+          {onToggleAudio && (
+            <button
+              onClick={onToggleAudio}
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition ${
+                audioEnabled
+                  ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/25'
+                  : 'bg-rose-500/15 text-rose-300 border-rose-500/30 hover:bg-rose-500/25'
+              }`}
+              title="Toggle alarm audio beacon"
+            >
+              {audioEnabled ? (
+                <>
+                  <Volume2 className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Alarm Audio: ON</span>
+                </>
+              ) : (
+                <>
+                  <VolumeX className="w-3.5 h-3.5 text-rose-400" />
+                  <span>Alarm Audio: MUTED</span>
+                </>
+              )}
+            </button>
+          )}
+
           <button
             onClick={handleTestAudio}
             disabled={audioTesting}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-industrial-800 hover:bg-industrial-750 text-slate-200 border border-industrial-700 transition"
+            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition border ${
+              audioTesting
+                ? 'bg-cyan-500/20 text-cyan-300 border-cyan-400 shadow-md shadow-cyan-900/50 animate-pulse'
+                : 'bg-industrial-800 hover:bg-industrial-750 text-slate-200 border-industrial-700'
+            }`}
           >
             <Volume2 className="w-3.5 h-3.5 text-cyan-400" />
             <span>{audioTesting ? 'Playing 880Hz Siren...' : 'Test Web Audio Alarm'}</span>
